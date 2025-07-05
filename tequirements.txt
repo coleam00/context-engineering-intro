@@ -1,0 +1,57 @@
+# Context Engineering Enhanced Dependencies
+# Install with: pip install -r requirements.txt
+
+# Core dependencies for enhanced context engineering
+PyYAML>=6.0.1           # For knowledge base YAML files
+requests>=2.25.0        # For URL validation and external research
+
+# Code quality and validation tools
+ruff>=0.1.0             # Fast Python linter and formatter
+mypy>=1.0.0             # Static type checker
+bandit>=1.7.0           # Security linter
+
+# Testing framework
+pytest>=7.0.0           # Testing framework
+pytest-asyncio>=0.21.0  # Async test support
+pytest-cov>=4.0.0       # Coverage reporting
+
+# Development tools (optional but recommended)
+black>=23.0.0           # Code formatter (alternative to ruff format)
+isort>=5.12.0           # Import sorter
+
+# Optional: Enhanced analysis capabilities
+psutil>=5.9.0           # System and process utilities for performance monitoring
+gitpython>=3.1.0        # Git repository analysis (alternative to subprocess git calls)
+
+# Optional: Web scraping for external research (advanced features)
+beautifulsoup4>=4.11.0  # HTML parsing for documentation scraping
+lxml>=4.9.0             # Fast XML/HTML parser
+
+# Optional: Advanced metrics and visualization
+matplotlib>=3.6.0       # For generating analysis charts
+pandas>=1.5.0           # Data analysis for metrics processing
+
+# Environment management
+python-dotenv>=1.0.0    # Environment variable loading
+
+# Common project dependencies (adjust based on your specific project)
+# Uncomment and modify as needed for your project:
+
+# Web frameworks
+# fastapi>=0.100.0       # Modern web framework
+# uvicorn>=0.20.0        # ASGI server
+# pydantic>=2.0.0        # Data validation
+
+# Database
+# sqlalchemy>=2.0.0      # SQL toolkit and ORM
+# alembic>=1.11.0        # Database migration tool
+
+# CLI tools
+# click>=8.1.0           # Command line interface creation
+# typer>=0.9.0           # Modern CLI framework
+# rich>=13.0.0           # Rich text and beautiful formatting
+
+# AI/ML (if building agent systems)
+# openai>=1.0.0          # OpenAI API client
+# anthropic>=0.8.0       # Anthropic API client
+# pydantic-ai>=0.0.1     # Pydantic AI framework
