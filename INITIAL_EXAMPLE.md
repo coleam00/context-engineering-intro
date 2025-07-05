@@ -1,3 +1,9 @@
+This is an example of a good feature request that you can use to generate a PRP. You can use this as a template for your own feature requests. After you have reviewed this example, you can generate a PRP in Gemini CLI by running the following command:
+
+```bash
+gemini -p "@./.gemini/commands/generate-prp.md" "INITIAL_EXAMPLE.md"
+```
+
 ## FEATURE:
 
 - Pydantic AI agent that has another Pydantic AI agent as a tool.

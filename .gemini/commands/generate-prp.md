@@ -64,6 +64,6 @@ Save as: `PRPs/{feature-name}.md`
 - [ ] Clear implementation path
 - [ ] Error handling documented
 
-Score the PRP on a scale of 1-10 (confidence level to succeed in one-pass implementation using claude codes)
+Score the PRP on a scale of 1-10 (confidence level to succeed in one-pass implementation using Gemini CLI)
 
 Remember: The goal is one-pass implementation success through comprehensive context.
