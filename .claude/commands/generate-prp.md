@@ -38,7 +38,7 @@ Using PRPs/templates/prp_base.md as template:
 - Start with pseudocode showing approach
 - Reference real files for patterns
 - Include error handling strategy
-- list tasks to be completed to fullfill the PRP in the order they should be completed
+- list tasks to be completed to fulfill the PRP in the order they should be completed
 
 ### Validation Gates (Must be Executable) eg for python
 ```bash
