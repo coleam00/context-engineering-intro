@@ -1,17 +1,21 @@
-name: "Base PRP Template v2 - Context-Rich with Validation Loops"
-description: |
+# Base PRP Template v2 - Context-Rich with Validation Loops
 
 ## Purpose
 Template optimized for AI agents to implement features with sufficient context and self-validation capabilities to achieve working code through iterative refinement.
 
 ## Core Principles
-1. **Context is King**: Include ALL necessary documentation, examples, and caveats
-2. **Validation Loops**: Provide executable tests/lints the AI can run and fix
-3. **Information Dense**: Use keywords and patterns from the codebase
-4. **Progressive Success**: Start simple, validate, then enhance
-5. **Global rules**: Be sure to follow all rules in CLAUDE.md
+1. **Context is King**: Include ALL necessary documentation, examples, and caveats.
+2. **Validation Loops**: Provide executable tests/lints the AI can run and fix.
+3. **Information Dense**: Use keywords and patterns from the codebase.
+4. **Progressive Success**: Start simple, validate, then enhance.
+5. **Global Rules**: Strictly follow all rules in `CLAUDE.md`.
 
----
+## Pre-Write Validation
+Before modifying or creating any file:
+- **Verify File Existence**: Check if the target file (e.g., `src/existing_module.py`) exists. If it does not exist, either create an empty file with appropriate headers or halt with an error message: "File [filename] not found, cannot proceed."
+- **Check File Integrity**: Ensure the file adheres to project conventions (e.g., file length < 500 lines, relative imports used).
+- **Run Linter**: Execute `ruff check [filename]` to detect style or syntax errors. If errors are found, halt and report: "Linter errors in [filename]: [error details]."
+- **Validate Context**: Confirm that referenced examples (e.g., `examples/web_scraper.py`) exist and match the expected structure.
 
 ## Goal
 [What needs to be built - be specific about the end state and desires]
@@ -43,8 +47,7 @@ Template optimized for AI agents to implement features with sufficient context a
   critical: [Key insight that prevents common errors]
 
 - docfile: [PRPs/ai_docs/file.md]
-  why: [docs that the user has pasted in to the project]
-
+  why: [Docs that the user has pasted in to the project]
 ```
 
 ### Current Codebase tree (run `tree` in the root of the project) to get an overview of the codebase
@@ -62,50 +65,42 @@ Template optimized for AI agents to implement features with sufficient context a
 # CRITICAL: [Library name] requires [specific setup]
 # Example: FastAPI requires async functions for endpoints
 # Example: This ORM doesn't support batch inserts over 1000 records
-# Example: We use pydantic v2 and  
+# Example: We use pydantic v2
 ```
 
 ## Implementation Blueprint
 
 ### Data models and structure
-
-Create the core data models, we ensure type safety and consistency.
+Create the core data models to ensure type safety and consistency.
 ```python
 Examples: 
- - orm models
- - pydantic models
- - pydantic schemas
- - pydantic validators
-
+- orm models
+- pydantic models
+- pydantic schemas
+- pydantic validators
 ```
 
-### list of tasks to be completed to fullfill the PRP in the order they should be completed
-
+### List of tasks to be completed to fulfill the PRP in the order they should be completed
 ```yaml
 Task 1:
-MODIFY src/existing_module.py:
-  - FIND pattern: "class OldImplementation"
-  - INJECT after line containing "def __init__"
-  - PRESERVE existing method signatures
+  MODIFY src/existing_module.py:
+    - FIND pattern: "class OldImplementation"
+    - INJECT after line containing "def __init__"
+    - PRESERVE existing method signatures
 
-CREATE src/new_feature.py:
-  - MIRROR pattern from: src/similar_feature.py
-  - MODIFY class name and core logic
-  - KEEP error handling pattern identical
-
-...(...)
+  CREATE src/new_feature.py:
+    - MIRROR pattern from: src/similar_feature.py
+    - MODIFY class name and core logic
+    - KEEP error handling pattern identical
 
 Task N:
-...
-
+  ...
 ```
-
 
 ### Per task pseudocode as needed added to each task
 ```python
-
 # Task 1
-# Pseudocode with CRITICAL details dont write entire code
+# Pseudocode with CRITICAL details, don't write entire code
 async def new_feature(param: str) -> Result:
     # PATTERN: Always validate input first (see src/validators.py)
     validated = validate_input(param)  # raises ValidationError
@@ -151,7 +146,7 @@ mypy src/new_feature.py              # Type checking
 # Expected: No errors. If errors, READ the error and fix.
 ```
 
-### Level 2: Unit Tests each new feature/file/function use existing test patterns
+### Level 2: Unit Tests for each new feature/file/function, use existing test patterns
 ```python
 # CREATE test_new_feature.py with these test cases:
 def test_happy_path():
@@ -192,7 +187,7 @@ curl -X POST http://localhost:8000/feature \
 # If error: Check logs at logs/app.log for stack trace
 ```
 
-## Final validation Checklist
+## Final Validation Checklist
 - [ ] All tests pass: `uv run pytest tests/ -v`
 - [ ] No linting errors: `uv run ruff check src/`
 - [ ] No type errors: `uv run mypy src/`
@@ -201,8 +196,6 @@ curl -X POST http://localhost:8000/feature \
 - [ ] Logs are informative but not verbose
 - [ ] Documentation updated if needed
 
----
-
 ## Anti-Patterns to Avoid
 - ❌ Don't create new patterns when existing ones work
 - ❌ Don't skip validation because "it should work"  
@@ -210,3 +203,13 @@ curl -X POST http://localhost:8000/feature \
 - ❌ Don't use sync functions in async context
 - ❌ Don't hardcode values that should be config
 - ❌ Don't catch all exceptions - be specific
+
+
+
+### Commit Message (in English)
+
+```
+Update PRP template to v2 with pre-write validation and enhanced structure
+
+Updated `PRPs/templates/prp_base.md` to version 2, incorporating a new "Pre-Write Validation" section to enforce file existence, integrity, and linter checks before modifications. Enhanced the template with a richer structure for context, implementation, and validation loops, ensuring compliance with `CLAUDE.md` rules and ODIN's strict reliability requirements (0% regression, mandatory documentation). Added detailed sections for data models, task lists, and integration points to improve clarity and AI-driven development reliability.
+```
