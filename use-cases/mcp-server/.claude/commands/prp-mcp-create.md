@@ -1,100 +1,100 @@
 ---
 name: "prp-mcp-create"
-description: This command is designed to create a comprehensive Product Requirement Prompt (PRP) for building Model Context Protocol (MCP) servers referencing this codebase patterns mirroring tool setups for the users specific requirements.
+description: 此命令旨在創建一個全面的產品需求提示（Product Requirement Prompt, PRP），用於構建模型上下文協議（Model Context Protocol, MCP）服務器，參考此代碼庫模式，鏡像工具設置以滿足用戶的特定需求。
 Usage: /prp-mcp-create path/to/prp.md
-Example usage: /prp-mcp-create weather-server "MCP server for weather data with API integration"
-Example usage: /prp-mcp-create file-manager "MCP server mirroring task master mcp"
+Example usage: /prp-mcp-create weather-server "用於天氣數據的 MCP 服務器，含 API 集成"
+Example usage: /prp-mcp-create file-manager "鏡像 task master mcp 的 MCP 服務器"
 ```
 ---
 
-# Create MCP Server PRP
+# 創建 MCP Server PRP
 
-Create a comprehensive Product Requirement Prompt (PRP) for building Model Context Protocol (MCP) servers with authentication, database integration, and Cloudflare Workers deployment.
+創建一個全面的產品需求提示（Product Requirement Prompt, PRP），用於構建具有身份驗證、數據庫集成和 Cloudflare Workers 部署的模型上下文協議（Model Context Protocol, MCP）服務器。
 
-Before you start ensure that you read these key files to get an understanding about the goal of the PRP:
+在開始之前，請確保您閱讀這些關鍵文件以了解 PRP 的目標：
 PRPs/README.md
-PRPs/templates/prp_mcp_base.md (This base PRP is already partially filled out based on the project structure but please finish it specific to the user's use case for an MCP server)
+PRPs/templates/prp_mcp_base.md（此基礎 PRP 已根據項目結構部分填寫，但請根據用戶的 MCP 服務器用例完成它）
 
-## Users MCP use case: $ARGUMENTS
+## 用戶的 MCP 用例：$ARGUMENTS
 
-## Purpose
+## 目的
 
-Generate context-rich PRPs specifically designed for MCP server development, using the proven patterns in this codebase that is a scaffolding of a MCP server setup that the user can build upon, including GitHub OAuth, and production-ready Cloudflare Workers deployment.
+生成專為 MCP 服務器開發設計的富含上下文的 PRP，使用此代碼庫中的成熟模式，這是一個 MCP 服務器設置的腳手架，用戶可以在此基礎上構建，包括 GitHub OAuth 和生產就緒的 Cloudflare Workers 部署。
 
-None of the existing tools will likely be reused and the tools should be created for the users use case specifically tailored to their needs.
+現有的工具可能都不會被重用，工具應該為用戶的用例專門創建，以滿足他們的特定需求。
 
-## Execution Process
+## 執行流程
 
-1. **Research & Context Gathering**
-   - Create clear todos and spawn subagents to search the codebase for similar features/patterns Think hard and plan your approach
-   - Gather relevant documentation about MCP tools, resources, and authentication flows
-   - Research existing tool patterns to understand how to build the users specified use case
-   - Study existing integration patterns in the codebase
+1. **研究與上下文收集**
+   - 創建清晰的待辦事項並生成子代理來搜索代碼庫中的類似功能/模式。深入思考並規劃您的方法
+   - 收集有關 MCP 工具、資源和身份驗證流程的相關文檔
+   - 研究現有的工具模式，以了解如何構建用戶指定的用例
+   - 研究代碼庫中現有的集成模式
 
-2. **Generate Comprehensive PRP**
-   - Use the specialized `PRPs/templates/prp_mcp_base.md` template as the foundation
-   - Customize the template with specific server requirements and functionality
-   - Include all necessary context from the codebase patterns and ai_docs
-   - Add specific validation loops for MCP server development
-   - Include database integration patterns and security considerations
+2. **生成全面的 PRP**
+   - 使用專門的 `PRPs/templates/prp_mcp_base.md` 模板作為基礎
+   - 使用特定的服務器需求和功能自定義模板
+   - 包含來自代碼庫模式和 ai_docs 的所有必要上下文
+   - 為 MCP 服務器開發添加特定的驗證循環
+   - 包含數據庫集成模式和安全考慮
 
-3. **Enhance with AI docs**
-   - The use might have added docs in PRPs/ai_docs/ directory that you should read
-   - If there are docs in the PRPs/ai_docs/ directory, review them and take them into context as you build the PRP
+3. **使用 AI 文檔增強**
+   - 用戶可能在 PRPs/ai_docs/ 目錄中添加了文檔，您應該閱讀它們
+   - 如果 PRPs/ai_docs/ 目錄中有文檔，請查看它們並在構建 PRP 時將它們納入上下文
 
-## Implementation Details
+## 實施細節
 
-### PRP Structure for MCP Servers
+### MCP 服務器的 PRP 結構
 
-The generated PRP uses the specialized template `PRPs/templates/prp_mcp_base.md` and includes:
+生成的 PRP 使用專門的模板 `PRPs/templates/prp_mcp_base.md` 並包括：
 
-- **Goal**: Clear description of the MCP server to be built with authentication and database integration
-- **Context**: All necessary documentation including PRPs/ai_docs/ references and existing codebase patterns
-- **Implementation Blueprint**: Step-by-step TypeScript tasks following Cloudflare Workers patterns
-- **Validation Loop**: Comprehensive MCP-specific testing from compilation to production deployment
-- **Security Considerations**: GitHub OAuth flows, database access patterns, and SQL injection protection
+- **目標**：清晰描述要構建的 MCP 服務器，包含身份驗證和數據庫集成
+- **上下文**：所有必要的文檔，包括 PRPs/ai_docs/ 參考和現有代碼庫模式
+- **實施藍圖**：遵循 Cloudflare Workers 模式的逐步 TypeScript 任務
+- **驗證循環**：從編譯到生產部署的全面 MCP 特定測試
+- **安全考慮**：GitHub OAuth 流程、數據庫訪問模式和 SQL 注入保護
 
-### Key Features
+### 關鍵特性
 
-- **Context-Rich**: Includes all patterns and references using relative paths from this proven codebase
-- **Validation-Driven**: Multi-level validation from syntax to production deployment
-- **Security-First**: Built-in authentication and authorization patterns
-- **Production-Ready**: Cloudflare Workers deployment and monitoring
+- **富含上下文**：使用此成熟代碼庫的相對路徑包含所有模式和參考
+- **驗證驅動**：從語法到生產部署的多級驗證
+- **安全優先**：內置身份驗證和授權模式
+- **生產就緒**：Cloudflare Workers 部署和監控
 
-### Research Areas
+### 研究領域
 
-1. **MCP Protocol Patterns**
-   - Tool registration and validation
-   - Resource serving and caching
-   - Error handling and logging
-   - Client communication patterns
+1. **MCP Protocol 模式**
+   - 工具註冊和驗證
+   - 資源服務和緩存
+   - 錯誤處理和日誌記錄
+   - 客戶端通信模式
 
-2. **Authentication Integration**
-   - GitHub OAuth implementation
-   - User permission systems
-   - Token management and validation
-   - Session handling patterns
+2. **身份驗證集成**
+   - GitHub OAuth 實施
+   - 用戶權限系統
+   - Token 管理和驗證
+   - Session 處理模式
 
-## Output
+## 輸出
 
-Creates a comprehensive PRP file in the PRPs/ directory with:
+在 PRPs/ 目錄中創建一個全面的 PRP 文件，包含：
 
-- All necessary context and code patterns
-- Step-by-step implementation tasks
-- Validation loops for MCP server development
+- 所有必要的上下文和代碼模式
+- 逐步實施任務
+- MCP 服務器開發的驗證循環
 
-## Validation
+## 驗證
 
-The command ensures:
+該命令確保：
 
-- All referenced code patterns exist in the codebase
-- Documentation links are valid and accessible
-- Implementation tasks are specific and actionable
-- Validation loops are comprehensive and executable by claude code (IMPORTANT)
+- 所有引用的代碼模式存在於代碼庫中
+- 文檔鏈接有效且可訪問
+- 實施任務具體且可執行
+- 驗證循環全面且可由 claude code 執行（重要）
 
-## Integration with Existing Patterns
+## 與現有模式的集成
 
-- Uses specialized MCP template from `PRPs/templates/prp_mcp_base.md`
-- Follows the established directory structure and naming conventions
-- Integrates with existing validation patterns and tools
-- Leverages proven patterns from the current MCP server implementation in `src/`
+- 使用來自 `PRPs/templates/prp_mcp_base.md` 的專門 MCP 模板
+- 遵循已建立的目錄結構和命名約定
+- 與現有的驗證模式和工具集成
+- 利用 `src/` 中當前 MCP 服務器實施的成熟模式
