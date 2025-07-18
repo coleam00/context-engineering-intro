@@ -1,5 +1,54 @@
 # MCP Server with GitHub OAuth - Implementation Guide
 
+## MCP Server 技術架構圖
+
+```mermaid
+flowchart TD
+    A["技術堆疊"]
+    A --> B["運行環境<br/>Cloudflare Workers"]
+    A --> C["程式語言<br/>TypeScript + Node.js"]
+    A --> D["MCP 框架"]
+    A --> E["資料層"]
+    
+    B --> B1["V8 Isolates"]
+    B --> B2["Durable Objects"]
+    B --> B3["KV Storage"]
+    B --> B4["Workers AI"]
+    
+    C --> C1["TypeScript 嚴格模式"]
+    C --> C2["Zod 輸入驗證"]
+    C --> C3["npm 套件管理"]
+    
+    D --> D1["@modelcontextprotocol/sdk"]
+    D --> D2["agents/mcp"]
+    D --> D3["workers-mcp"]
+    
+    E --> E1["PostgreSQL"]
+    E --> E2["連接池管理"]
+    E --> E3["SQL 注入防護"]
+```
+
+## 開發工作流程圖
+
+```mermaid
+flowchart LR
+    A["開發階段"] --> B["本地開發<br/>wrangler dev"]
+    B --> C["型別檢查<br/>npm run type-check"]
+    C --> D["測試驗證<br/>MCP Inspector"]
+    D --> E["部署階段"]
+    
+    E --> F["環境配置<br/>.dev.vars"]
+    F --> G["生產部署<br/>wrangler deploy"]
+    G --> H["監控整合<br/>Sentry"]
+    
+    I["工具管理"] --> I1["註冊新工具"]
+    I1 --> I2["Zod Schema"]
+    I1 --> I3["權限檢查"]
+    I1 --> I4["錯誤處理"]
+    
+    I --> J["register-tools.ts"]
+```
+
 This guide provides implementation patterns and standards for building MCP (Model Context Protocol) servers with GitHub OAuth authentication using Node.js, TypeScript, and Cloudflare Workers. For WHAT to build, see the PRP (Product Requirement Prompt) documents.
 
 ## Core Principles

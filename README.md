@@ -1,5 +1,44 @@
 # Context Engineering Template
 
+## 專案架構圖
+
+```mermaid
+flowchart TD
+    A["Context Engineering 模板專案"]
+    A --> B["核心元件"]
+    A --> C["PRP 工作流程"]
+    A --> D["使用案例"]
+    
+    B --> B1["CLAUDE.md<br/>專案規則"]
+    B --> B2["INITIAL.md<br/>功能需求"]
+    B --> B3["examples/<br/>程式碼範例"]
+    
+    C --> C1[".claude/commands/<br/>自訂命令"]
+    C --> C2["PRPs/templates/<br/>PRP 模板"]
+    C --> C3["PRPs/<br/>生成的 PRP"]
+    
+    D --> D1["use-cases/mcp-server<br/>MCP Server 範例"]
+    
+    C1 --> E["/generate-prp<br/>生成 PRP"]
+    C1 --> F["/execute-prp<br/>執行 PRP"]
+```
+
+## Context Engineering 工作流程
+
+```mermaid
+flowchart LR
+    A["1. 定義功能需求<br/>INITIAL.md"] --> B["2. 生成 PRP<br/>/generate-prp"]
+    B --> C["3. 執行 PRP<br/>/execute-prp"]
+    C --> D["4. 驗證與測試"]
+    D --> E{"通過測試"}
+    E -->|"是"| F["5. 完成實作"]
+    E -->|"否"| G["修正錯誤"]
+    G --> D
+    
+    H["examples/<br/>程式碼範例"] --> B
+    I["CLAUDE.md<br/>專案規則"] --> C
+```
+
 一個全面的 template，用於開始使用 Context Engineering - 這是一門為 AI 編程助手設計 context 的學科，讓它們擁有端到端完成工作所需的信息。
 
 > **Context Engineering 比 prompt engineering 好 10 倍，比 vibe coding 好 100 倍。**

@@ -1,3 +1,47 @@
+# 功能請求範例 - Pydantic AI Agent 系統
+
+## 範例功能架構圖
+
+```mermaid
+flowchart TD
+    A["Pydantic AI Agent 系統"]
+    A --> B["主要 Agent<br/>研究 Agent"]
+    A --> C["子 Agent<br/>郵件草稿 Agent"]
+    A --> D["CLI 介面"]
+    
+    B --> B1["使用 Brave API"]
+    B --> B2["研究功能"]
+    B --> B3["作為工具提供給其他 Agent"]
+    
+    C --> C1["使用 Gmail API"]
+    C --> C2["郵件草稿功能"]
+    C --> C3["被研究 Agent 呼叫"]
+    
+    D --> D1["與 Agent 交互"]
+    D --> D2["命令列介面"]
+    
+    E["環境配置"] --> E1[".env 檔案"]
+    E --> E2["API 金鑰管理"]
+    
+    E1 --> B1
+    E1 --> C1
+```
+
+## Agent 互動流程圖
+
+```mermaid
+flowchart LR
+    A["使用者<br/>CLI"] --> B["主要研究 Agent"]
+    B --> C["Brave API<br/>搜尋"]
+    B --> D["郵件草稿 Agent<br/>工具"]
+    D --> E["Gmail API<br/>草稿"]
+    
+    F["examples/agent/<br/>最佳實踐"] -.-> B
+    F -.-> D
+    
+    G["examples/cli.py<br/>CLI 模板"] -.-> A
+```
+
 ## 功能特性：
 
 - 一個 Pydantic AI agent，它使用另一個 Pydantic AI agent 作為工具。

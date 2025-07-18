@@ -1,5 +1,53 @@
 # MCP Server Builder - Context Engineering Use Case
 
+## MCP Server 整體架構圖
+
+```mermaid
+flowchart TD
+    A["MCP Server<br/>Cloudflare Workers"]
+    A --> B["身份驗證層"]
+    A --> C["MCP 核心"]
+    A --> D["工具系統"]
+    
+    B --> B1["GitHub OAuth 2.0"]
+    B --> B2["HMAC 簽名 Cookie"]
+    B --> B3["角色權限控制"]
+    
+    C --> C1["McpAgent<br/>Durable Objects"]
+    C --> C2["McpServer SDK"]
+    C --> C3["雙協議支持<br/>HTTP + SSE"]
+    
+    D --> D1["資料庫工具"]
+    D --> D2["模組化註冊"]
+    D --> D3["Zod 驗證"]
+    
+    E["外部整合"] --> E1["PostgreSQL"]
+    E --> E2["GitHub API"]
+    E --> E3["Sentry 監控"]
+    
+    D1 --> E1
+    B1 --> E2
+    C --> E3
+```
+
+## MCP Server PRP 工作流程圖
+
+```mermaid
+flowchart LR
+    A["1. 定義需求<br/>PRPs/INITIAL.md"] --> B["2. 生成 MCP PRP<br/>/prp-mcp-create"]
+    B --> C["3. 審查與調整<br/>PRPs/your-server.md"]
+    C --> D["4. 執行 PRP<br/>/prp-mcp-execute"]
+    D --> E["5. 本地測試<br/>wrangler dev"]
+    E --> F["6. 部署生產<br/>wrangler deploy"]
+    
+    G["MCP 模板與模式"] --> B
+    H["現有程式碼範例"] --> B
+    I["驗證循環"] --> D
+    
+    E --> E1["MCP Inspector<br/>測試"]
+    E --> E2["Claude Desktop<br/>整合"]
+```
+
 This use case demonstrates how to use **Context Engineering** and the **PRP (Product Requirements Prompt) process** to build production-ready Model Context Protocol (MCP) servers. It provides a proven template and workflow for creating MCP servers with GitHub OAuth authentication, database integration, and Cloudflare Workers deployment.
 
 > A PRP is PRD + curated codebase intelligence + agent/runbook—the minimum viable packet an AI needs to plausibly ship production-ready code on the first pass.
