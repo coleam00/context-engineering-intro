@@ -1,171 +1,171 @@
-# MCP Server with GitHub OAuth - Implementation Guide
+# MCP Server 搭配 GitHub OAuth - 實作指南
 
-This guide provides implementation patterns and standards for building MCP (Model Context Protocol) servers with GitHub OAuth authentication using Node.js, TypeScript, and Cloudflare Workers. For WHAT to build, see the PRP (Product Requirement Prompt) documents.
+本指南提供使用 Node.js、TypeScript 和 Cloudflare Workers 建構具有 GitHub OAuth 身份驗證的 MCP (Model Context Protocol) 伺服器的實作模式和標準。關於「要建構什麼」的資訊，請參閱 PRP (Product Requirement Prompt) 文件。
 
-## Core Principles
+## 核心原則
 
-**IMPORTANT: You MUST follow these principles in all code changes and PRP generations:**
+**重要：您必須在所有程式碼變更和 PRP 生成中遵循這些原則：**
 
 ### KISS (Keep It Simple, Stupid)
 
-- Simplicity should be a key goal in design
-- Choose straightforward solutions over complex ones whenever possible
-- Simple solutions are easier to understand, maintain, and debug
+- 簡潔性應該是設計的關鍵目標
+- 在可能的情況下，選擇直接的解決方案而不是複雜的方案
+- 簡單的解決方案更容易理解、維護和除錯
 
 ### YAGNI (You Aren't Gonna Need It)
 
-- Avoid building functionality on speculation
-- Implement features only when they are needed, not when you anticipate they might be useful in the future
+- 避免基於推測來建構功能
+- 只在需要時實作功能，而不是在您預期未來可能有用時
 
-### Open/Closed Principle
+### 開放/封閉原則
 
-- Software entities should be open for extension but closed for modification
-- Design systems so that new functionality can be added with minimal changes to existing code
+- 軟體實體應該對擴展開放，對修改封閉
+- 設計系統時，新功能可以在對現有程式碼進行最小變更的情況下添加
 
-## Package Management & Tooling
+## 套件管理與工具
 
-**CRITICAL: This project uses npm for Node.js package management and Wrangler CLI for Cloudflare Workers development.**
+**關鍵：此專案使用 npm 進行 Node.js 套件管理，使用 Wrangler CLI 進行 Cloudflare Workers 開發。**
 
-### Essential npm Commands
+### 基本 npm 指令
 
 ```bash
-# Install dependencies from package.json
+# 從 package.json 安裝依賴項
 npm install
 
-# Add a dependency
+# 新增依賴項
 npm install package-name
 
-# Add a development dependency
+# 新增開發依賴項
 npm install --save-dev package-name
 
-# Remove a package
+# 移除套件
 npm uninstall package-name
 
-# Update dependencies
+# 更新依賴項
 npm update
 
-# Run scripts defined in package.json
+# 執行 package.json 中定義的腳本
 npm run dev
 npm run deploy
 npm run type-check
 ```
 
-### Essential Wrangler CLI Commands
+### 基本 Wrangler CLI 指令
 
-**CRITICAL: Use Wrangler CLI for all Cloudflare Workers development, testing, and deployment.**
+**關鍵：使用 Wrangler CLI 進行所有 Cloudflare Workers 開發、測試和部署。**
 
 ```bash
-# Authentication
-wrangler login          # Login to Cloudflare account
-wrangler logout         # Logout from Cloudflare
-wrangler whoami         # Check current user
+# 身份驗證
+wrangler login          # 登入 Cloudflare 帳戶
+wrangler logout         # 登出 Cloudflare
+wrangler whoami         # 檢查目前使用者
 
-# Development & Testing
-wrangler dev           # Start local development server (default port 8787)
+# 開發與測試
+wrangler dev           # 啟動本地開發伺服器（預設端口 8787）
 
-# Deployment
-wrangler deploy        # Deploy Worker to Cloudflare
-wrangler deploy --dry-run  # Test deployment without actually deploying
+# 部署
+wrangler deploy        # 部署 Worker 至 Cloudflare
+wrangler deploy --dry-run  # 測試部署而不實際部署
 
-# Configuration & Types
-wrangler types         # Generate TypeScript types from Worker configuration
+# 設定與型別
+wrangler types         # 從 Worker 設定生成 TypeScript 型別
 ```
 
-## Project Architecture
+## 專案架構
 
-**IMPORTANT: This is a Cloudflare Workers MCP server with GitHub OAuth authentication for secure database access.**
+**重要：這是一個具有 GitHub OAuth 身份驗證的 Cloudflare Workers MCP 伺服器，用於安全資料庫存取。**
 
-### Current Project Structure
+### 目前專案結構
 
 ```
 /
-├── src/                          # TypeScript source code
-│   ├── index.ts                  # Main MCP server (standard)
-│   ├── index_sentry.ts          # Sentry-enabled MCP server
-│   ├── simple-math.ts           # Basic MCP example (no auth)
-│   ├── github-handler.ts        # GitHub OAuth flow implementation
-│   ├── database.ts              # PostgreSQL connection & utilities
-│   ├── utils.ts                 # OAuth helper functions
-│   ├── workers-oauth-utils.ts   # Cookie-based approval system
-│   └── tools/                   # Tool registration system
-│       └── register-tools.ts    # Centralized tool registration
+├── src/                          # TypeScript 原始碼
+│   ├── index.ts                  # 主要 MCP 伺服器（標準版）
+│   ├── index_sentry.ts          # 啟用 Sentry 的 MCP 伺服器
+│   ├── simple-math.ts           # 基本 MCP 範例（無身份驗證）
+│   ├── github-handler.ts        # GitHub OAuth 流程實作
+│   ├── database.ts              # PostgreSQL 連線與工具
+│   ├── utils.ts                 # OAuth 輔助函式
+│   ├── workers-oauth-utils.ts   # 基於 cookie 的核准系統
+│   └── tools/                   # 工具註冊系統
+│       └── register-tools.ts    # 集中化工具註冊
 ├── PRPs/                        # Product Requirement Prompts
 │   ├── README.md
 │   └── templates/
 │       └── prp_mcp_base.md
-├── examples/                    # Example tool creation + registration - NEVER edit or import from this folder
-│   ├── database-tools.ts        # Example tools for a Postgres MCP server showing best practices for tool creation and registration
-│   └── database-tools-sentry.ts # Example tools for the Postgres MCP server but with the Sentry integration for production monitoring
-├── wrangler.jsonc              # Main Cloudflare Workers configuration
-├── wrangler-simple.jsonc       # Simple math example configuration
-├── package.json                # npm dependencies & scripts
-├── tsconfig.json               # TypeScript configuration
-├── worker-configuration.d.ts   # Generated Cloudflare types
-└── CLAUDE.md                   # This implementation guide
+├── examples/                    # 工具建立與註冊範例 - 永不編輯或從此資料夾匯入
+│   ├── database-tools.ts        # Postgres MCP 伺服器範例工具，展示工具建立與註冊的最佳實踐
+│   └── database-tools-sentry.ts # Postgres MCP 伺服器的範例工具，但具有 Sentry 整合，用於生產環境監控
+├── wrangler.jsonc              # 主要 Cloudflare Workers 設定
+├── wrangler-simple.jsonc       # 簡單數學範例設定
+├── package.json                # npm 依賴項與腳本
+├── tsconfig.json               # TypeScript 設定
+├── worker-configuration.d.ts   # 生成的 Cloudflare 型別
+└── CLAUDE.md                   # 此實作指南
 ```
 
-### Key File Purposes (ALWAYS ADD NEW FILES HERE)
+### 主要檔案用途（請始終在此添加新檔案）
 
-**Main Implementation Files:**
+**主要實作檔案：**
 
-- `src/index.ts` - Production MCP server with GitHub OAuth + PostgreSQL
-- `src/index_sentry.ts` - Same as above with Sentry monitoring integration
+- `src/index.ts` - 具有 GitHub OAuth + PostgreSQL 的生產 MCP 伺服器
+- `src/index_sentry.ts` - 與上述相同，但具有 Sentry 監控整合
 
-**Authentication & Security:**
+**身份驗證與安全性：**
 
-- `src/github-handler.ts` - Complete GitHub OAuth 2.0 flow
-- `src/workers-oauth-utils.ts` - HMAC-signed cookie approval system
-- `src/utils.ts` - OAuth token exchange and URL construction helpers
+- `src/github-handler.ts` - 完整的 GitHub OAuth 2.0 流程
+- `src/workers-oauth-utils.ts` - HMAC 簽章 cookie 核准系統
+- `src/utils.ts` - OAuth 權杖交換和 URL 構建輔助函式
 
-**Database Integration:**
+**資料庫整合：**
 
-- `src/database.ts` - PostgreSQL connection pooling, SQL validation, security
+- `src/database.ts` - PostgreSQL 連線池、SQL 驗證、安全性
 
-**Tool Registration:**
+**工具註冊：**
 
-- `src/tools/register-tools.ts` - Centralized tool registration system that imports and registers all tools
+- `src/tools/register-tools.ts` - 集中化工具註冊系統，匯入並註冊所有工具
 
-**Configuration Files:**
+**設定檔案：**
 
-- `wrangler.jsonc` - Main Worker config with Durable Objects, KV, AI bindings
-- `wrangler-simple.jsonc` - Simple example configuration
-- `tsconfig.json` - TypeScript compiler settings for Cloudflare Workers
+- `wrangler.jsonc` - 主要 Worker 設定，包含 Durable Objects、KV、AI 綁定
+- `wrangler-simple.jsonc` - 簡單範例設定
+- `tsconfig.json` - 適用於 Cloudflare Workers 的 TypeScript 編譯器設定
 
-## Development Commands
+## 開發指令
 
-### Core Workflow Commands
+### 核心工作流程指令
 
 ```bash
-# Setup & Dependencies
-npm install                  # Install all dependencies
-npm install --save-dev @types/package  # Add dev dependency with types
+# 設定與依賴項
+npm install                  # 安裝所有依賴項
+npm install --save-dev @types/package  # 添加具有型別的開發依賴項
 
-# Development
-wrangler dev                # Start local development server
-npm run dev                 # Alternative via npm script
+# 開發
+wrangler dev                # 啟動本地開發伺服器
+npm run dev                 # 透過 npm 腳本的替代方案
 
-# Type Checking & Validation
-npm run type-check          # Run TypeScript compiler check
-wrangler types              # Generate Cloudflare Worker types
-npx tsc --noEmit           # Type check without compiling
+# 型別檢查與驗證
+npm run type-check          # 執行 TypeScript 編譯器檢查
+wrangler types              # 生成 Cloudflare Worker 型別
+npx tsc --noEmit           # 不編譯的型別檢查
 
-# Testing
-npx vitest                  # Run unit tests (if configured)
+# 測試
+npx vitest                  # 執行單元測試（如果已設定）
 
-# Code Quality
-npx prettier --write .      # Format code
-npx eslint src/            # Lint TypeScript code
+# 程式碼品質
+npx prettier --write .      # 格式化程式碼
+npx eslint src/            # 檢查 TypeScript 程式碼
 ```
 
-### Environment Configuration
+### 環境設定
 
-**Environment Variables Setup:**
+**環境變數設定：**
 
 ```bash
-# Create .dev.vars file for local development based on .dev.vars.example
+# 根據 .dev.vars.example 建立 .dev.vars 檔案，用於本地開發
 cp .dev.vars.example .dev.vars
 
-# Production secrets (via Wrangler)
+# 生產環境密鑰（透過 Wrangler）
 wrangler secret put GITHUB_CLIENT_ID
 wrangler secret put GITHUB_CLIENT_SECRET
 wrangler secret put COOKIE_ENCRYPTION_KEY
@@ -173,30 +173,30 @@ wrangler secret put DATABASE_URL
 wrangler secret put SENTRY_DSN
 ```
 
-## MCP Development Context
+## MCP 開發環境
 
-**IMPORTANT: This project builds production-ready MCP servers using Node.js/TypeScript on Cloudflare Workers with GitHub OAuth authentication.**
+**重要：此專案使用 Node.js/TypeScript 在 Cloudflare Workers 上建構具有 GitHub OAuth 身份驗證的生產就緒 MCP 伺服器。**
 
-### MCP Technology Stack
+### MCP 技術堆疊
 
-**Core Technologies:**
+**核心技術：**
 
-- **@modelcontextprotocol/sdk** - Official MCP TypeScript SDK
-- **agents/mcp** - Cloudflare Workers MCP agent framework
-- **workers-mcp** - MCP transport layer for Workers
-- **@cloudflare/workers-oauth-provider** - OAuth 2.1 server implementation
+- **@modelcontextprotocol/sdk** - 官方 MCP TypeScript SDK
+- **agents/mcp** - Cloudflare Workers MCP 代理框架
+- **workers-mcp** - 適用於 Workers 的 MCP 傳輸層
+- **@cloudflare/workers-oauth-provider** - OAuth 2.1 伺服器實作
 
-**Cloudflare Platform:**
+**Cloudflare 平台：**
 
-- **Cloudflare Workers** - Serverless runtime (V8 isolates)
-- **Durable Objects** - Stateful objects for MCP agent persistence
-- **KV Storage** - OAuth state and session management
+- **Cloudflare Workers** - 無伺服器運行時（V8 isolates）
+- **Durable Objects** - 用於 MCP 代理持久性的有狀態物件
+- **KV Storage** - OAuth 狀態與會話管理
 
-### MCP Server Architecture
+### MCP 伺服器架構
 
-This project implements MCP servers as Cloudflare Workers with three main patterns:
+此專案將 MCP 伺服器實作為 Cloudflare Workers，具有三種主要模式：
 
-**1. Authenticated Database MCP Server (`src/index.ts`):**
+**1. 經身份驗證的資料庫 MCP 伺服器（`src/index.ts`）：**
 
 ```typescript
 export class MyMCP extends McpAgent<Env, Record<string, never>, Props> {
@@ -205,32 +205,32 @@ export class MyMCP extends McpAgent<Env, Record<string, never>, Props> {
     version: "1.0.0",
   });
 
-  // MCP Tools available based on user permissions
-  // - listTables (all users)
-  // - queryDatabase (all users, read-only)
-  // - executeDatabase (privileged users only)
+  // 根據使用者權限提供的 MCP 工具
+  // - listTables（所有使用者）
+  // - queryDatabase（所有使用者，唯讀）
+  // - executeDatabase（僅限特權使用者）
 }
 ```
 
-**2. Monitored MCP Server (`src/index_sentry.ts`):**
+**2. 監控的 MCP 伺服器（`src/index_sentry.ts`）：**
 
-- Same functionality as above with Sentry instrumentation
-- Distributed tracing for MCP tool calls
-- Error tracking with event IDs
-- Performance monitoring
+- 與上述相同的功能，但具有 Sentry 檢測
+- MCP 工具呼叫的分散式追蹤
+- 具有事件 ID 的錯誤追蹤
+- 性能監控
 
-### MCP Development Commands
+### MCP 開發指令
 
-**Local Development & Testing:**
+**本地開發與測試：**
 
 ```bash
-# Start main MCP server (with OAuth)
-wrangler dev                    # Available at http://localhost:8792/mcp
+# 啟動主要 MCP 伺服器（具有 OAuth）
+wrangler dev                    # 可在 http://localhost:8792/mcp 存取
 ```
 
-### Claude Desktop Integration
+### Claude Desktop 整合
 
-**For Local Development:**
+**用於本地開發：**
 
 ```json
 {
@@ -244,7 +244,7 @@ wrangler dev                    # Available at http://localhost:8792/mcp
 }
 ```
 
-**For Production Deployment:**
+**用於生產部署：**
 
 ```json
 {
@@ -258,46 +258,46 @@ wrangler dev                    # Available at http://localhost:8792/mcp
 }
 ```
 
-### MCP Key Concepts for This Project
+### 此專案的 MCP 關鍵概念
 
-- **Tools**: Database operations (listTables, queryDatabase, executeDatabase)
-- **Authentication**: GitHub OAuth with role-based access control
-- **Transport**: Dual support for HTTP (`/mcp`) and SSE (`/sse`) protocols
-- **State**: Durable Objects maintain authenticated user context
-- **Security**: SQL injection protection, permission validation, error sanitization
+- **工具**：資料庫操作（listTables、queryDatabase、executeDatabase）
+- **身份驗證**：具有角色型存取控制的 GitHub OAuth
+- **傳輸**：對 HTTP（`/mcp`）和 SSE（`/sse`）協議的雙重支援
+- **狀態**：Durable Objects 維護經身份驗證的使用者環境
+- **安全性**：SQL 注入防護、權限驗證、錯誤清理
 
-## Database Integration & Security
+## 資料庫整合與安全性
 
-**CRITICAL: This project provides secure PostgreSQL database access through MCP tools with role-based permissions.**
+**關鍵：此專案透過具有角色型權限的 MCP 工具提供安全的 PostgreSQL 資料庫存取。**
 
-### Database Architecture
+### 資料庫架構
 
-**Connection Management (`src/database.ts`):**
+**連線管理（`src/database.ts`）：**
 
 ```typescript
-// Singleton connection pool with Cloudflare Workers limits
+// 具有 Cloudflare Workers 限制的單例連線池
 export function getDb(databaseUrl: string): postgres.Sql {
   if (!dbInstance) {
     dbInstance = postgres(databaseUrl, {
-      max: 5, // Max 5 connections for Workers
+      max: 5, // Workers 最多 5 個連線
       idle_timeout: 20,
       connect_timeout: 10,
-      prepare: true, // Enable prepared statements
+      prepare: true, // 啟用預處理語句
     });
   }
   return dbInstance;
 }
 
-// Connection wrapper with error handling
+// 具有錯誤處理的連線包裝器
 export async function withDatabase<T>(databaseUrl: string, operation: (db: postgres.Sql) => Promise<T>): Promise<T> {
   const db = getDb(databaseUrl);
-  // Execute operation with timing and error handling
+  // 執行具有計時和錯誤處理的操作
 }
 ```
 
-### Security Implementation
+### 安全性實作
 
-**SQL Injection Protection:**
+**SQL 注入防護：**
 
 ```typescript
 export function validateSqlQuery(sql: string): { isValid: boolean; error?: string } {
@@ -305,9 +305,9 @@ export function validateSqlQuery(sql: string): { isValid: boolean; error?: strin
     /;\s*drop\s+/i,
     /;\s*delete\s+.*\s+where\s+1\s*=\s*1/i,
     /;\s*truncate\s+/i,
-    // ... more patterns
+    // ... 更多模式
   ];
-  // Pattern-based validation for safety
+  // 基於模式的安全性驗證
 }
 
 export function isWriteOperation(sql: string): boolean {
@@ -316,38 +316,38 @@ export function isWriteOperation(sql: string): boolean {
 }
 ```
 
-**Access Control (`src/index.ts`):**
+**存取控制（`src/index.ts`）：**
 
 ```typescript
 const ALLOWED_USERNAMES = new Set<string>([
-  'coleam00'  // Only these GitHub usernames can execute write operations
+  'coleam00'  // 只有這些 GitHub 使用者名稱可以執行寫入操作
 ]);
 
-// Tool availability based on user permissions
+// 根據使用者權限提供的工具
 if (ALLOWED_USERNAMES.has(this.props.login)) {
-  // Register executeDatabase tool for privileged users
+  // 為特權使用者註冊 executeDatabase 工具
   this.server.tool("executeDatabase", ...);
 }
 ```
 
-### MCP Tools Implementation
+### MCP 工具實作
 
-**Tool Registration System:**
+**工具註冊系統：**
 
-Tools are now organized in a modular way with centralized registration:
+工具現在以模組化方式組織，具有集中化註冊：
 
-1. **Tool Registration (`src/tools/register-tools.ts`):**
-   - Central registry that imports all tool modules
-   - Calls individual registration functions
-   - Passes server, environment, and user props to each module
+1. **工具註冊（`src/tools/register-tools.ts`）：**
+   - 匯入所有工具模組的中央註冊表
+   - 呼叫個別註冊函式
+   - 將伺服器、環境和使用者屬性傳遞給每個模組
 
-2. **Tool Implementation Pattern:**
-   - Each feature/domain gets its own tool file (e.g., `database-tools.ts`)
-   - Tools are exported as registration functions
-   - Registration functions receive server instance, environment, and user props
-   - Permission checking happens during registration
+2. **工具實作模式：**
+   - 每個功能/領域獲得自己的工具檔案（例如，`database-tools.ts`）
+   - 工具被匯出為註冊函式
+   - 註冊函式接收伺服器實例、環境和使用者屬性
+   - 權限檢查在註冊期間進行
 
-**Example Tool Registration:**
+**工具註冊範例：**
 
 ```typescript
 // src/tools/register-tools.ts
@@ -356,16 +356,16 @@ import { Props } from "../types";
 import { registerDatabaseTools } from "../../examples/database-tools";
 
 export function registerAllTools(server: McpServer, env: Env, props: Props) {
-  // Register database tools
+  // 註冊資料庫工具
   registerDatabaseTools(server, env, props);
   
-  // Future tools can be registered here
+  // 未來的工具可以在此註冊
   // registerAnalyticsTools(server, env, props);
   // registerReportingTools(server, env, props);
 }
 ```
 
-**Example Tool Module (`examples/database-tools.ts`):**
+**工具模組範例（`examples/database-tools.ts`）：**
 
 ```typescript
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -374,71 +374,71 @@ import { Props } from "../types";
 const ALLOWED_USERNAMES = new Set<string>(['coleam00']);
 
 export function registerDatabaseTools(server: McpServer, env: Env, props: Props) {
-  // Tool 1: Available to all authenticated users
+  // 工具 1：適用於所有經身份驗證的使用者
   server.tool(
     "listTables",
-    "Get a list of all tables in the database",
+    "取得資料庫中所有資料表的清單",
     ListTablesSchema,
     async () => {
-      // Implementation
+      // 實作
     }
   );
 
-  // Tool 2: Available to all authenticated users
+  // 工具 2：適用於所有經身份驗證的使用者
   server.tool(
     "queryDatabase",
-    "Execute a read-only SQL query",
+    "執行唯讀 SQL 查詢",
     QueryDatabaseSchema,
     async ({ sql }) => {
-      // Implementation with validation
+      // 具有驗證的實作
     }
   );
 
-  // Tool 3: Only for privileged users
+  // 工具 3：僅限特權使用者
   if (ALLOWED_USERNAMES.has(props.login)) {
     server.tool(
       "executeDatabase",
-      "Execute any SQL statement (privileged)",
+      "執行任何 SQL 語句（特權）",
       ExecuteDatabaseSchema,
       async ({ sql }) => {
-        // Implementation
+        // 實作
       }
     );
   }
 }
 ```
 
-**Available Database Tools in examples:**
+**範例中可用的資料庫工具：**
 
-1. **`listTables`** - Schema discovery (all authenticated users)
-2. **`queryDatabase`** - Read-only SQL queries (all authenticated users)
-3. **`executeDatabase`** - Write operations (privileged users only)
+1. **`listTables`** - 架構發現（所有經身份驗證的使用者）
+2. **`queryDatabase`** - 唯讀 SQL 查詢（所有經身份驗證的使用者）
+3. **`executeDatabase`** - 寫入操作（僅限特權使用者）
 
-## GitHub OAuth Implementation
+## GitHub OAuth 實作
 
-**CRITICAL: This project implements secure GitHub OAuth 2.0 flow with signed cookie-based approval system.**
+**關鍵：此專案實作安全的 GitHub OAuth 2.0 流程，具有基於簽章 cookie 的核准系統。**
 
-### OAuth Flow Architecture
+### OAuth 流程架構
 
-**Authentication Flow (`src/github-handler.ts`):**
+**身份驗證流程（`src/github-handler.ts`）：**
 
 ```typescript
-// 1. Authorization Request
+// 1. 授權請求
 app.get("/authorize", async (c) => {
   const oauthReqInfo = await c.env.OAUTH_PROVIDER.parseAuthRequest(c.req.raw);
 
-  // Check if client already approved via signed cookie
+  // 透過簽章 cookie 檢查客戶端是否已核准
   if (await clientIdAlreadyApproved(c.req.raw, oauthReqInfo.clientId, c.env.COOKIE_ENCRYPTION_KEY)) {
     return redirectToGithub(c.req.raw, oauthReqInfo, c.env, {});
   }
 
-  // Show approval dialog
+  // 顯示核准對話框
   return renderApprovalDialog(c.req.raw, { client, server, state });
 });
 
-// 2. GitHub Callback
+// 2. GitHub 回呼
 app.get("/callback", async (c) => {
-  // Exchange code for access token
+  // 交換代碼以獲取存取權杖
   const [accessToken, errResponse] = await fetchUpstreamAuthToken({
     client_id: c.env.GITHUB_CLIENT_ID,
     client_secret: c.env.GITHUB_CLIENT_SECRET,
@@ -446,10 +446,10 @@ app.get("/callback", async (c) => {
     redirect_uri: new URL("/callback", c.req.url).href,
   });
 
-  // Get GitHub user info
+  // 取得 GitHub 使用者資訊
   const user = await new Octokit({ auth: accessToken }).rest.users.getAuthenticated();
 
-  // Complete authorization with user props
+  // 使用使用者屬性完成授權
   return c.env.OAUTH_PROVIDER.completeAuthorization({
     props: { accessToken, email, login, name } as Props,
     userId: login,
@@ -457,12 +457,12 @@ app.get("/callback", async (c) => {
 });
 ```
 
-### Cookie Security System
+### Cookie 安全系統
 
-**HMAC-Signed Approval Cookies (`src/workers-oauth-utils.ts`):**
+**HMAC 簽章核准 Cookie（`src/workers-oauth-utils.ts`）：**
 
 ```typescript
-// Generate signed cookie for client approval
+// 為客戶端核准生成簽章 cookie
 async function signData(key: CryptoKey, data: string): Promise<string> {
   const signatureBuffer = await crypto.subtle.sign("HMAC", key, enc.encode(data));
   return Array.from(new Uint8Array(signatureBuffer))
@@ -470,63 +470,63 @@ async function signData(key: CryptoKey, data: string): Promise<string> {
     .join("");
 }
 
-// Verify cookie integrity
+// 驗證 cookie 完整性
 async function verifySignature(key: CryptoKey, signatureHex: string, data: string): Promise<boolean> {
   const signatureBytes = new Uint8Array(signatureHex.match(/.{1,2}/g)!.map((byte) => parseInt(byte, 16)));
   return await crypto.subtle.verify("HMAC", key, signatureBytes.buffer, enc.encode(data));
 }
 ```
 
-### User Context & Permissions
+### 使用者環境與權限
 
-**Authenticated User Props:**
+**經身份驗證的使用者屬性：**
 
 ```typescript
 type Props = {
-  login: string; // GitHub username
-  name: string; // Display name
-  email: string; // Email address
-  accessToken: string; // GitHub access token
+  login: string; // GitHub 使用者名稱
+  name: string; // 顯示名稱
+  email: string; // 電子郵件地址
+  accessToken: string; // GitHub 存取權杖
 };
 
-// Available in MCP tools via this.props
+// 在 MCP 工具中透過 this.props 可用
 class MyMCP extends McpAgent<Env, Record<string, never>, Props> {
   async init() {
-    // Access user context in any tool
+    // 在任何工具中存取使用者環境
     const username = this.props.login;
     const hasWriteAccess = ALLOWED_USERNAMES.has(username);
   }
 }
 ```
 
-## Monitoring & Observability
+## 監控與可觀察性
 
-**CRITICAL: This project supports optional Sentry integration for production monitoring and includes built-in console logging.**
+**關鍵：此專案支援可選的 Sentry 整合，用於生產環境監控，並包含內建的主控台記錄。**
 
-### Logging Architecture
+### 記錄架構
 
-**Two Deployment Options:**
+**兩個部署選項：**
 
-1. **Standard Version (`src/index.ts`)**: Console logging only
-2. **Sentry Version (`src/index_sentry.ts`)**: Full Sentry instrumentation
+1. **標準版本（`src/index.ts`）**：僅主控台記錄
+2. **Sentry 版本（`src/index_sentry.ts`）**：完整的 Sentry 檢測
 
-### Sentry Integration (Optional)
+### Sentry 整合（可選）
 
-**Enable Sentry Monitoring:**
+**啟用 Sentry 監控：**
 
 ```typescript
-// src/index_sentry.ts - Production-ready with monitoring
+// src/index_sentry.ts - 具有監控的生產就緒版本
 import * as Sentry from "@sentry/cloudflare";
 
-// Sentry configuration
+// Sentry 設定
 function getSentryConfig(env: Env) {
   return {
     dsn: env.SENTRY_DSN,
-    tracesSampleRate: 1,  // 100% trace sampling
+    tracesSampleRate: 1,  // 100% 追蹤採樣
   };
 }
 
-// Instrument MCP tools with tracing
+// 使用追蹤檢測 MCP 工具
 private registerTool(name: string, description: string, schema: any, handler: any) {
   this.server.tool(name, description, schema, async (args: any) => {
     return await Sentry.startNewTrace(async () => {
@@ -534,7 +534,7 @@ private registerTool(name: string, description: string, schema: any, handler: an
         name: `mcp.tool/${name}`,
         attributes: extractMcpParameters(args),
       }, async (span) => {
-        // Set user context
+        // 設定使用者環境
         Sentry.setUser({
           username: this.props.login,
           email: this.props.email,
@@ -543,8 +543,8 @@ private registerTool(name: string, description: string, schema: any, handler: an
         try {
           return await handler(args);
         } catch (error) {
-          span.setStatus({ code: 2 }); // error
-          return handleError(error);  // Returns user-friendly error with event ID
+          span.setStatus({ code: 2 }); // 錯誤
+          return handleError(error);  // 回傳具有事件 ID 的使用者友好錯誤
         }
       });
     });
@@ -552,35 +552,35 @@ private registerTool(name: string, description: string, schema: any, handler: an
 }
 ```
 
-**Sentry Features Enabled:**
+**已啟用的 Sentry 功能：**
 
-- **Error Tracking**: Automatic exception capture with context
-- **Performance Monitoring**: Full request tracing with 100% sample rate
-- **User Context**: GitHub user information bound to events
-- **Tool Tracing**: Each MCP tool call traced with parameters
-- **Distributed Tracing**: Request flow across Cloudflare Workers
+- **錯誤追蹤**：具有環境的自動例外捕獲
+- **性能監控**：具有 100% 採樣率的完整請求追蹤
+- **使用者環境**：GitHub 使用者資訊綁定到事件
+- **工具追蹤**：每個 MCP 工具呼叫都會追蹤參數
+- **分散式追蹤**：跨 Cloudflare Workers 的請求流程
 
-### Production Logging Patterns
+### 生產記錄模式
 
-**Console Logging (Standard):**
+**主控台記錄（標準）：**
 
 ```typescript
-// Database operations
+// 資料庫操作
 console.log(`Database operation completed successfully in ${duration}ms`);
 console.error(`Database operation failed after ${duration}ms:`, error);
 
-// Authentication events
+// 身份驗證事件
 console.log(`User authenticated: ${this.props.login} (${this.props.name})`);
 
-// Tool execution
+// 工具執行
 console.log(`Tool called: ${toolName} by ${this.props.login}`);
 console.error(`Tool failed: ${toolName}`, error);
 ```
 
-**Structured Error Handling:**
+**結構化錯誤處理：**
 
 ```typescript
-// Error sanitization for security
+// 安全性錯誤清理
 export function formatDatabaseError(error: unknown): string {
   if (error instanceof Error) {
     if (error.message.includes("password")) {
@@ -595,70 +595,70 @@ export function formatDatabaseError(error: unknown): string {
 }
 ```
 
-### Monitoring Configuration
+### 監控設定
 
-**Development Monitoring:**
+**開發監控：**
 
 ```bash
-# Enable Sentry in development
+# 在開發中啟用 Sentry
 echo 'SENTRY_DSN=https://your-dsn@sentry.io/project' >> .dev.vars
 echo 'NODE_ENV=development' >> .dev.vars
 
-# Use Sentry-enabled version
-wrangler dev --config wrangler.jsonc  # Ensure main = "src/index_sentry.ts"
+# 使用啟用 Sentry 的版本
+wrangler dev --config wrangler.jsonc  # 確保 main = "src/index_sentry.ts"
 ```
 
-**Production Monitoring:**
+**生產監控：**
 
 ```bash
-# Set production secrets
+# 設定生產密鑰
 wrangler secret put SENTRY_DSN
-wrangler secret put NODE_ENV  # Set to "production"
+wrangler secret put NODE_ENV  # 設定為 "production"
 
-# Deploy with monitoring
+# 使用監控部署
 wrangler deploy
 ```
 
-## TypeScript Development Standards
+## TypeScript 開發標準
 
-**CRITICAL: All MCP tools MUST follow TypeScript best practices with Zod validation and proper error handling.**
+**關鍵：所有 MCP 工具必須遵循 TypeScript 最佳實踐，具有 Zod 驗證和適當的錯誤處理。**
 
-### Standard Response Format
+### 標準回應格式
 
-**ALL tools MUST return MCP-compatible response objects:**
+**所有工具必須回傳 MCP 相容的回應物件：**
 
 ```typescript
 import { z } from "zod";
 
-// Tool with proper TypeScript patterns
+// 遵循標準回應格式的工具
 this.server.tool(
   "standardizedTool",
-  "Tool following standard response format",
+  "遵循標準回應格式的工具",
   {
-    name: z.string().min(1, "Name cannot be empty"),
+    name: z.string().min(1, "名稱不能為空"),
     options: z.object({}).optional(),
   },
   async ({ name, options }) => {
     try {
-      // Input already validated by Zod schema
+      // 輸入已由 Zod 架構驗證
       const result = await processName(name, options);
 
-      // Return standardized success response
+      // 回傳標準化成功回應
       return {
         content: [
           {
             type: "text",
-            text: `**Success**\n\nProcessed: ${name}\n\n**Result:**\n\`\`\`json\n${JSON.stringify(result, null, 2)}\n\`\`\`\n\n**Processing time:** 0.5s`,
+            text: `**成功**\n\n已處理：${name}\n\n**結果：**\n\`\`\`json\n${JSON.stringify(result, null, 2)}\n\`\`\`\n\n**處理時間：** 0.5s`,
           },
         ],
       };
     } catch (error) {
-      // Return standardized error response
+      // 回傳標準化錯誤回應
       return {
         content: [
           {
             type: "text",
-            text: `**Error**\n\nProcessing failed: ${error instanceof Error ? error.message : String(error)}`,
+            text: `**錯誤**\n\n處理失敗：${error instanceof Error ? error.message : String(error)}`,
             isError: true,
           },
         ],
@@ -668,168 +668,84 @@ this.server.tool(
 );
 ```
 
-### Input Validation with Zod
+### 使用 Zod 進行輸入驗證
 
-**ALL tool inputs MUST be validated using Zod schemas:**
+**所有工具輸入必須使用 Zod 架構進行驗證：**
 
 ```typescript
 import { z } from "zod";
 
-// Define validation schemas
+// 定義驗證架構
 const DatabaseQuerySchema = z.object({
   sql: z
     .string()
-    .min(1, "SQL query cannot be empty")
+    .min(1, "SQL 查詢不能為空")
     .refine((sql) => sql.trim().toLowerCase().startsWith("select"), {
-      message: "Only SELECT queries are allowed",
+      message: "僅允許 SELECT 查詢",
     }),
   limit: z.number().int().positive().max(1000).optional(),
 });
 
-// Use in tool definition
+// 在工具定義中使用
 this.server.tool(
   "queryDatabase",
-  "Execute a read-only SQL query",
-  DatabaseQuerySchema, // Zod schema provides automatic validation
+  "執行唯讀 SQL 查詢",
+  DatabaseQuerySchema, // Zod 架構提供自動驗證
   async ({ sql, limit }) => {
-    // sql and limit are already validated and properly typed
+    // sql 和 limit 已經過驗證並正確型別化
     const results = await db.unsafe(sql);
     return { content: [{ type: "text", text: JSON.stringify(results, null, 2) }] };
   },
 );
 ```
 
-### Error Handling Patterns
+### 錯誤處理模式
 
-**Standardized error responses:**
+**標準化錯誤回應：**
 
 ```typescript
-// Error handling utility
+// 錯誤處理工具
 function createErrorResponse(message: string, details?: any): any {
   return {
     content: [{
       type: "text",
-      text: `**Error**\n\n${message}${details ? `\n\n**Details:**\n\`\`\`json\n${JSON.stringify(details, null, 2)}\n\`\`\`` : ''}`,
+      text: `**錯誤**\n\n${message}${details ? `\n\n**詳細資訊：**\n\`\`\`json\n${JSON.stringify(details, null, 2)}\n\`\`\`` : ''}`,
       isError: true
     }]
   };
 }
 
-// Permission error
+// 權限錯誤
 if (!ALLOWED_USERNAMES.has(this.props.login)) {
   return createErrorResponse(
-    "Insufficient permissions for this operation",
-    { requiredRole: "privileged", userRole: "standard" }
+    "此操作權限不足",
+    { requiredRole: "特權", userRole: "標準" }
   );
 }
 
-// Validation error
+// 驗證錯誤
 if (isWriteOperation(sql)) {
   return createErrorResponse(
-    "Write operations not allowed with this tool",
-    { operation: "write", allowedOperations: ["select", "show", "describe"] }
+    "此工具不允許寫入操作",
+    { operation: "寫入", allowedOperations: ["select", "show", "describe"] }
   );
 }
 
-// Database error
+// 資料庫錯誤
 catch (error) {
   return createErrorResponse(
-    "Database operation failed",
+    "資料庫操作失敗",
     { error: formatDatabaseError(error) }
   );
 }
 ```
 
-### Type Safety Rules
+### 型別安全規則
 
-**MANDATORY TypeScript patterns:**
+**強制的 TypeScript 模式：**
 
-1. **Strict Types**: All parameters and return types explicitly typed
-2. **Zod Validation**: All inputs validated with Zod schemas
-3. **Error Handling**: All async operations wrapped in try/catch
-4. **User Context**: Props typed with GitHub user information
-5. **Environment**: Cloudflare Workers types generated with `wrangler types`
-
-## Code Style Preferences
-
-### TypeScript Style
-
-- Use explicit type annotations for all function parameters and return types
-- Use JSDoc comments for all exported functions and classes
-- Prefer async/await for all asynchronous operations
-- **MANDATORY**: Use Zod schemas for all input validation
-- **MANDATORY**: Use proper error handling with try/catch blocks
-- Keep functions small and focused (single responsibility principle)
-
-### File Organization
-
-- Each MCP server should be self-contained in a single TypeScript file
-- Import statements organized: Node.js built-ins, third-party packages, local imports
-- Use relative imports within the src/ directory
-- **Import Zod for validation and proper types for all modules**
-
-### Testing Conventions
-
-- Use MCP Inspector for integration testing: `npx @modelcontextprotocol/inspector@latest`
-- Test with local development server: `wrangler dev`
-- Use descriptive tool names and descriptions
-- **Test both authentication and permission scenarios**
-- **Test input validation with invalid data**
-
-## Important Notes
-
-### What NOT to do
-
-- **NEVER** commit secrets or environment variables to the repository
-- **NEVER** build complex solutions when simple ones will work
-- **NEVER** skip input validation with Zod schemas
-
-### What TO do
-
-- **ALWAYS** use TypeScript strict mode and proper typing
-- **ALWAYS** validate inputs with Zod schemas
-- **ALWAYS** follow the core principles (KISS, YAGNI, etc.)
-- **ALWAYS** use Wrangler CLI for all development and deployment
-
-## Git Workflow
-
-```bash
-# Before committing, always run:
-npm run type-check              # Ensure TypeScript compiles
-wrangler dev --dry-run          # Test deployment configuration
-
-# Commit with descriptive messages
-git add .
-git commit -m "feat: add new MCP tool for database queries"
-```
-
-## Quick Reference
-
-### Adding New MCP Tools
-
-1. **Create a new tool module** in your project (following the pattern in `examples/`):
-   ```typescript
-   // src/tools/your-feature-tools.ts
-   export function registerYourFeatureTools(server: McpServer, env: Env, props: Props) {
-     // Register your tools here
-   }
-   ```
-
-2. **Define Zod schemas** for input validation in your types file
-
-3. **Implement tool handlers** with proper error handling using the patterns from examples
-
-4. **Register your tools** in `src/tools/register-tools.ts`:
-   ```typescript
-   import { registerYourFeatureTools } from "./your-feature-tools";
-   
-   export function registerAllTools(server: McpServer, env: Env, props: Props) {
-     // Existing registrations
-     registerDatabaseTools(server, env, props);
-     
-     // Add your new registration
-     registerYourFeatureTools(server, env, props);
-   }
-   ```
-
-5. **Update documentation** if needed
+1. **嚴格型別**：所有參數和回傳型別明確型別化
+2. **Zod 驗證**：所有輸入都使用 Zod 架構驗證
+3. **錯誤處理**：所有非同步操作都包裝在 try/catch 中
+4. **使用者環境**：使用 GitHub 使用者資訊進行 Props 型別化
+5. **環境**：使用 `wrangler types` 生成 Cloudflare Workers
