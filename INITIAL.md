@@ -1,15 +1,15 @@
-## FEATURE:
+## 功能特性：
 
-[Insert your feature here]
+[在此處插入您的功能特性]
 
-## EXAMPLES:
+## 範例：
 
-[Provide and explain examples that you have in the `examples/` folder]
+[提供並解釋您在 `examples/` 資料夾中的範例]
 
-## DOCUMENTATION:
+## 文檔：
 
-[List out any documentation (web pages, sources for an MCP server like Crawl4AI RAG, etc.) that will need to be referenced during development]
+[列出開發過程中需要參考的任何文檔（網頁、MCP server 如 Crawl4AI RAG 等的源文件）]
 
-## OTHER CONSIDERATIONS:
+## 其他考慮：
 
-[Any other considerations or specific requirements - great place to include gotchas that you see AI coding assistants miss with your projects a lot]
+[任何其他考慮或特定要求 - 這裡很適合包含您在項目中經常看到 AI 編程助手遺漏的注意事項]

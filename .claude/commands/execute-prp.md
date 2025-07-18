@@ -1,40 +1,40 @@
-# Execute BASE PRP
+# 執行 BASE PRP
 
-Implement a feature using using the PRP file.
+使用 PRP 文件實現一個功能。
 
 ## PRP File: $ARGUMENTS
 
-## Execution Process
+## 執行流程
 
-1. **Load PRP**
-   - Read the specified PRP file
-   - Understand all context and requirements
-   - Follow all instructions in the PRP and extend the research if needed
-   - Ensure you have all needed context to implement the PRP fully
-   - Do more web searches and codebase exploration as needed
+1. **載入 PRP**
+   - 讀取指定的 PRP 文件
+   - 理解所有背景和需求
+   - 遵循 PRP 中的所有指示，並在需要時擴展研究
+   - 確保您擁有完整實現 PRP 所需的所有背景資訊
+   - 根據需要進行更多網路搜索和代碼庫探索
 
 2. **ULTRATHINK**
-   - Think hard before you execute the plan. Create a comprehensive plan addressing all requirements.
-   - Break down complex tasks into smaller, manageable steps using your todos tools.
-   - Use the TodoWrite tool to create and track your implementation plan.
-   - Identify implementation patterns from existing code to follow.
+   - 在執行計劃之前深入思考。創建一個全面的計劃來滿足所有需求。
+   - 使用您的 todos 工具將複雜任務分解為更小、更易管理的步驟。
+   - 使用 TodoWrite 工具創建和追蹤您的實施計劃。
+   - 從現有代碼中識別要遵循的實現模式。
 
-3. **Execute the plan**
-   - Execute the PRP
-   - Implement all the code
+3. **執行計劃**
+   - 執行 PRP
+   - 實現所有代碼
 
-4. **Validate**
-   - Run each validation command
-   - Fix any failures
-   - Re-run until all pass
+4. **驗證**
+   - 運行每個驗證命令
+   - 修復任何失敗
+   - 重新運行直到全部通過
 
-5. **Complete**
-   - Ensure all checklist items done
-   - Run final validation suite
-   - Report completion status
-   - Read the PRP again to ensure you have implemented everything
+5. **完成**
+   - 確保所有檢查清單項目完成
+   - 運行最終驗證套件
+   - 報告完成狀態
+   - 重新讀取 PRP 以確保您已實現所有內容
 
-6. **Reference the PRP**
-   - You can always reference the PRP again if needed
+6. **參考 PRP**
+   - 如有需要，您隨時可以再次參考 PRP
 
-Note: If validation fails, use error patterns in PRP to fix and retry.
+注意：如果驗證失敗，請使用 PRP 中的錯誤模式進行修復並重試。
