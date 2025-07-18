@@ -1,32 +1,84 @@
-## FEATURE:
+# MCP Server 功能需求 - PRP 任務管理系統
 
-We want to create a MCP server using this repos template
+## 系統架構圖
 
-The goal of the MCP server is to create a simple version of taskmaster mcp that instead of parsing PRDs we parse PRPs.
+以下架構圖展示了 PRP 任務管理 MCP Server 的核心組成，包含 PRP 解析系統、任務管理系統和資料庫層：
 
-Additional features:
+```mermaid
+flowchart TD
+    A["PRP 任務管理 MCP Server"]
+    A --> B["PRP 解析系統"]
+    A --> C["任務管理系統"]
+    A --> D["資料庫層"]
+    
+    B --> B1["Anthropic LLM<br/>資訊擷取"]
+    B --> B2["PRP 文件解析"]
+    B --> B3["自動任務建立"]
+    
+    C --> C1["CRUD 操作"]
+    C --> C2["任務查詢"]
+    C --> C3["標籤管理"]
+    C --> C4["文檔管理"]
+    
+    D --> D1["任務表"]
+    D --> D2["文檔表"]
+    D --> D3["標籤表"]
+    D --> D4["關聯表"]
+```
 
-- LLM powered PRP information extraction using anthropic
-- Crud operation on tasks, documentation, tags, etc to and from the DB
+---
 
-We need tools for parsing PRPs this tool should take a filled PRP and use anthropic to extract the tasks into tasks and save them to the db, including surrounding documentation from the prp like the goals what whys, target users, etc.
+## 資料流程圖
 
-We need:
+此流程圖說明了從 PRP 文件解析到資料儲存和查詢的完整資料流程：
 
-- To be able to perform CRUD operations on tasks, documentation, tags, etc
-- A task fetch tool to get the tasks from the
-- To be able to list all tasks
-- To be able to add information to a task
-- To be able to fetch the additional documentation from the db
-- To be able to modify the additional documentation
-- DB tables needs to be updated to match our new data models
+```mermaid
+flowchart LR
+    A["PRP 文件"] --> B["解析工具<br/>parsePRP"]
+    B --> C["Anthropic API<br/>擷取資訊"]
+    C --> D["結構化資料"]
+    
+    D --> E["儲存到資料庫"]
+    E --> E1["任務"]
+    E --> E2["目標"]
+    E --> E3["使用者"]
+    E --> E4["文檔"]
+    
+    F["查詢工具"] --> G["從資料庫獲取"]
+    G --> H["返回結果"]
+    
+    I["修改工具"] --> J["更新資料庫"]
+```
 
-## EXAMPLES & DOCUMENTATION:
+## 功能：
 
-All examples are already referenced in prp_mcp_base.md - do any additional research as needed.
+我們想要使用這個儲存庫的模板創建一個 MCP 伺服器
 
-## OTHER CONSIDERATIONS:
+MCP 伺服器的目標是創建一個簡化版的 taskmaster mcp，但不是解析 PRDs，而是解析 PRPs。
 
-- Do not use complex regex or complex parsing patterns, we use an LLM to parse PRPs.
-- Model and API key for Anthropic both need to be environment variables - these are set up in .dev.vars.example
-- It's very important that we create one task per file to keep concerns separate
+額外功能：
+
+- 使用 anthropic 進行 LLM 驅動的 PRP 資訊提取
+- 對資料庫中的任務、文件、標籤等進行 CRUD 操作
+
+我們需要用於解析 PRPs 的工具，此工具應該接收一個已填寫的 PRP，並使用 anthropic 提取任務並將其保存到資料庫中，包括來自 PRP 的相關文件，如目標、原因、目標使用者等。
+
+我們需要：
+
+- 能夠對任務、文件、標籤等執行 CRUD 操作
+- 一個任務獲取工具，用於從資料庫獲取任務
+- 能夠列出所有任務
+- 能夠向任務添加資訊
+- 能夠從資料庫獲取額外的文件
+- 能夠修改額外的文件
+- 資料庫表格需要更新以符合我們的新資料模型
+
+## 範例與文件：
+
+所有範例都已在 prp_mcp_base.md 中引用 - 根據需要進行任何額外的研究。
+
+## 其他考量：
+
+- 不要使用複雜的 regex 或複雜的解析模式，我們使用 LLM 來解析 PRPs。
+- Anthropic 的模型和 API 金鑰都需要是環境變數 - 這些在 .dev.vars.example 中設置
+- 非常重要的是，我們為每個檔案創建一個任務，以保持關注點分離

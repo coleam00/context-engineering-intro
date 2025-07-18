@@ -1,15 +1,44 @@
-## FEATURE:
+# 功能請求文件 (INITIAL.md)
 
-[Insert your feature here]
+## 功能請求結構圖
 
-## EXAMPLES:
+此圖展示了功能請求文件的組成結構，包含功能特性、範例、文檔和其他考慮事項：
 
-[Provide and explain examples that you have in the `examples/` folder]
+```mermaid
+flowchart TD
+    A["功能請求文件<br/>INITIAL.md"]
+    A --> B["功能特性"]
+    A --> C["範例"]
+    A --> D["文檔"]
+    A --> E["其他考慮"]
+    
+    B --> B1["核心功能描述"]
+    B --> B2["具體需求規格"]
+    
+    C --> C1["examples/ 資料夾"]
+    C --> C2["參考模式說明"]
+    
+    D --> D1["API 文檔連結"]
+    D --> D2["MCP Server 資源"]
+    D --> D3["相關技術文檔"]
+    
+    E --> E1["特殊需求"]
+    E --> E2["常見陷阱"]
+    E --> E3["AI 容易遺漏的點"]
+```
 
-## DOCUMENTATION:
+## 功能特性：
 
-[List out any documentation (web pages, sources for an MCP server like Crawl4AI RAG, etc.) that will need to be referenced during development]
+[在此處插入您的功能特性]
 
-## OTHER CONSIDERATIONS:
+## 範例：
 
-[Any other considerations or specific requirements - great place to include gotchas that you see AI coding assistants miss with your projects a lot]
+[提供並解釋您在 `examples/` 資料夾中的範例]
+
+## 文檔：
+
+[列出開發過程中需要參考的任何文檔（網頁、MCP server 如 Crawl4AI RAG 等的源文件）]
+
+## 其他考慮：
+
+[任何其他考慮或特定要求 - 這裡很適合包含您在項目中經常看到 AI 編程助手遺漏的注意事項]
