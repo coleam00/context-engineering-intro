@@ -2,6 +2,8 @@
 
 ## 系統架構圖
 
+以下架構圖展示了 PRP 任務管理 MCP Server 的核心組成，包含 PRP 解析系統、任務管理系統和資料庫層：
+
 ```mermaid
 flowchart TD
     A["PRP 任務管理 MCP Server"]
@@ -24,7 +26,11 @@ flowchart TD
     D --> D4["關聯表"]
 ```
 
+---
+
 ## 資料流程圖
+
+此流程圖說明了從 PRP 文件解析到資料儲存和查詢的完整資料流程：
 
 ```mermaid
 flowchart LR

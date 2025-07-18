@@ -2,6 +2,8 @@
 
 ## 範例功能架構圖
 
+此架構圖展示了 Pydantic AI Agent 系統的組成，包含主要 Agent、子 Agent、CLI 介面和環境配置：
+
 ```mermaid
 flowchart TD
     A["Pydantic AI Agent 系統"]
@@ -27,7 +29,11 @@ flowchart TD
     E1 --> C1
 ```
 
+---
+
 ## Agent 互動流程圖
+
+以下流程圖說明了使用者如何透過 CLI 與各個 Agent 互動，以及 Agent 之間的調用關係：
 
 ```mermaid
 flowchart LR

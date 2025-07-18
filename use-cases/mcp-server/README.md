@@ -2,6 +2,8 @@
 
 ## MCP Server 整體架構圖
 
+以下架構圖展示了基於 Cloudflare Workers 的 MCP Server 完整技術堆疊，包含身份驗證、MCP 核心、工具系統和外部整合：
+
 ```mermaid
 flowchart TD
     A["MCP Server<br/>Cloudflare Workers"]
@@ -30,15 +32,19 @@ flowchart TD
     C --> E3
 ```
 
+---
+
 ## MCP Server PRP 工作流程圖
+
+此流程圖說明了使用 Context Engineering 建立 MCP Server 的完整流程，從定義需求到部署生產：
 
 ```mermaid
 flowchart LR
-    A["1. 定義需求<br/>PRPs/INITIAL.md"] --> B["2. 生成 MCP PRP<br/>/prp-mcp-create"]
-    B --> C["3. 審查與調整<br/>PRPs/your-server.md"]
-    C --> D["4. 執行 PRP<br/>/prp-mcp-execute"]
-    D --> E["5. 本地測試<br/>wrangler dev"]
-    E --> F["6. 部署生產<br/>wrangler deploy"]
+    A["1.定義需求<br/>PRPs/INITIAL.md"] --> B["2.生成 MCP PRP<br/>/prp-mcp-create"]
+    B --> C["3.審查與調整<br/>PRPs/your-server.md"]
+    C --> D["4.執行 PRP<br/>/prp-mcp-execute"]
+    D --> E["5.本地測試<br/>wrangler dev"]
+    E --> F["6.部署生產<br/>wrangler deploy"]
     
     G["MCP 模板與模式"] --> B
     H["現有程式碼範例"] --> B

@@ -2,6 +2,8 @@
 
 ## 專案架構圖
 
+以下圖表展示了 Context Engineering 模板專案的整體架構，包含核心元件、PRP 工作流程和使用案例：
+
 ```mermaid
 flowchart TD
     A["Context Engineering 模板專案"]
@@ -23,15 +25,19 @@ flowchart TD
     C1 --> F["/execute-prp<br/>執行 PRP"]
 ```
 
+---
+
 ## Context Engineering 工作流程
+
+此流程圖說明了從定義功能需求到完成實作的完整工作流程：
 
 ```mermaid
 flowchart LR
-    A["1. 定義功能需求<br/>INITIAL.md"] --> B["2. 生成 PRP<br/>/generate-prp"]
-    B --> C["3. 執行 PRP<br/>/execute-prp"]
-    C --> D["4. 驗證與測試"]
+    A["1.定義功能需求<br/>INITIAL.md"] --> B["2.生成 PRP<br/>/generate-prp"]
+    B --> C["3.執行 PRP<br/>/execute-prp"]
+    C --> D["4.驗證與測試"]
     D --> E{"通過測試"}
-    E -->|"是"| F["5. 完成實作"]
+    E -->|"是"| F["5.完成實作"]
     E -->|"否"| G["修正錯誤"]
     G --> D
     

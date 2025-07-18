@@ -2,6 +2,8 @@
 
 ## MCP Server 技術架構圖
 
+下圖展示了 MCP Server 的完整技術堆疊，包含運行環境、程式語言、MCP 框架和資料層的詳細組成：
+
 ```mermaid
 flowchart TD
     A["技術堆疊"]
@@ -28,7 +30,11 @@ flowchart TD
     E --> E3["SQL 注入防護"]
 ```
 
+---
+
 ## 開發工作流程圖
+
+此流程圖說明了從本地開發到生產部署的完整開發工作流程，包含測試、配置和監控各個環節：
 
 ```mermaid
 flowchart LR
