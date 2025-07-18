@@ -8,8 +8,8 @@
 
 ```bash
 # 1. 複製此 template
-git clone https://github.com/coleam00/Context-Engineering-Intro.git
-cd Context-Engineering-Intro
+git clone https://github.com/GitYCC/context-engineering-intro-zh.git
+cd context-engineering-intro-zh
 
 # 2. 設置您的專案規則（可選 - 已提供 template）
 # 編輯 CLAUDE.md 以添加您的專案特定指導原則
