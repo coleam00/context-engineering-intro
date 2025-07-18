@@ -1,59 +1,59 @@
-### 🔄 Project Awareness & Context
-- **Always read `PLANNING.md`** at the start of a new conversation to understand the project's architecture, goals, style, and constraints.
-- **Check `TASK.md`** before starting a new task. If the task isn’t listed, add it with a brief description and today's date.
-- **Use consistent naming conventions, file structure, and architecture patterns** as described in `PLANNING.md`.
-- **Use venv_linux** (the virtual environment) whenever executing Python commands, including for unit tests.
+### 🔄 專案認知與Context
+- **總是在新對話開始時閱讀 `PLANNING.md`** 以了解專案的架構、目標、風格和約束條件。
+- **開始新任務前檢查 `TASK.md`**。如果任務未列出，請添加該任務並附上簡短描述和今天的日期。
+- **使用一致的命名慣例、檔案結構和架構模式**，如 `PLANNING.md` 中所述。
+- **執行 Python 命令時使用 venv_linux**（虛擬環境），包括執行單元測試時。
 
-### 🧱 Code Structure & Modularity
-- **Never create a file longer than 500 lines of code.** If a file approaches this limit, refactor by splitting it into modules or helper files.
-- **Organize code into clearly separated modules**, grouped by feature or responsibility.
-  For agents this looks like:
-    - `agent.py` - Main agent definition and execution logic 
-    - `tools.py` - Tool functions used by the agent 
-    - `prompts.py` - System prompts
-- **Use clear, consistent imports** (prefer relative imports within packages).
-- **Use clear, consistent imports** (prefer relative imports within packages).
-- **Use python_dotenv and load_env()** for environment variables.
+### 🧱 程式碼結構與模組化
+- **永遠不要建立超過 500 行程式碼的檔案。** 如果檔案接近此限制，請透過拆分為模組或輔助檔案來重構。
+- **將程式碼組織成清楚分離的模組**，按功能或職責分組。
+  對於 agents，看起來像這樣：
+    - `agent.py` - 主要 agent 定義和執行邏輯
+    - `tools.py` - agent 使用的工具函數
+    - `prompts.py` - 系統 prompts
+- **使用清楚、一致的 imports**（在套件內偏好相對 imports）。
+- **使用清楚、一致的 imports**（在套件內偏好相對 imports）。
+- **使用 python_dotenv 和 load_env()** 來處理環境變數。
 
-### 🧪 Testing & Reliability
-- **Always create Pytest unit tests for new features** (functions, classes, routes, etc).
-- **After updating any logic**, check whether existing unit tests need to be updated. If so, do it.
-- **Tests should live in a `/tests` folder** mirroring the main app structure.
-  - Include at least:
-    - 1 test for expected use
-    - 1 edge case
-    - 1 failure case
+### 🧪 測試與可靠性
+- **總是為新功能建立 Pytest 單元測試**（函數、類別、路由等）。
+- **更新任何邏輯後**，檢查現有單元測試是否需要更新。如果需要，就執行。
+- **測試應該位於 `/tests` 資料夾中**，映射主要應用程式結構。
+  - 至少包含：
+    - 1 個預期使用的測試
+    - 1 個邊界情況
+    - 1 個失敗情況
 
-### ✅ Task Completion
-- **Mark completed tasks in `TASK.md`** immediately after finishing them.
-- Add new sub-tasks or TODOs discovered during development to `TASK.md` under a “Discovered During Work” section.
+### ✅ 任務完成
+- **完成任務後立即在 `TASK.md` 中標記已完成的任務**。
+- 在開發過程中發現的新子任務或 TODOs 添加到 `TASK.md` 的「工作中發現」部分。
 
-### 📎 Style & Conventions
-- **Use Python** as the primary language.
-- **Follow PEP8**, use type hints, and format with `black`.
-- **Use `pydantic` for data validation**.
-- Use `FastAPI` for APIs and `SQLAlchemy` or `SQLModel` for ORM if applicable.
-- Write **docstrings for every function** using the Google style:
+### 📎 風格與慣例
+- **使用 Python** 作為主要語言。
+- **遵循 PEP8**，使用 type hints，並用 `black` 格式化。
+- **使用 `pydantic` 進行資料驗證**。
+- 如果適用，使用 `FastAPI` 處理 APIs，使用 `SQLAlchemy` 或 `SQLModel` 作為 ORM。
+- **為每個函數撰寫 docstrings**，使用 Google 風格：
   ```python
   def example():
       """
-      Brief summary.
+      簡要摘要。
 
       Args:
-          param1 (type): Description.
+          param1 (type): 描述。
 
       Returns:
-          type: Description.
+          type: 描述。
       """
   ```
 
-### 📚 Documentation & Explainability
-- **Update `README.md`** when new features are added, dependencies change, or setup steps are modified.
-- **Comment non-obvious code** and ensure everything is understandable to a mid-level developer.
-- When writing complex logic, **add an inline `# Reason:` comment** explaining the why, not just the what.
+### 📚 文件與可解釋性
+- **當新增新功能、依賴項變更或設定步驟修改時，更新 `README.md`**。
+- **對非顯而易見的程式碼進行註解**，確保中級開發者能理解所有內容。
+- 撰寫複雜邏輯時，**添加內聯 `# Reason:` 註解**，解釋原因，而不僅僅是做什麼。
 
-### 🧠 AI Behavior Rules
-- **Never assume missing context. Ask questions if uncertain.**
-- **Never hallucinate libraries or functions** – only use known, verified Python packages.
-- **Always confirm file paths and module names** exist before referencing them in code or tests.
-- **Never delete or overwrite existing code** unless explicitly instructed to or if part of a task from `TASK.md`.
+### 🧠 AI 行為規則
+- **永遠不要假設缺失的 context。如果不確定，請提問。**
+- **永遠不要幻想函式庫或函數** - 只使用已知、經過驗證的 Python 套件。
+- **在程式碼或測試中引用之前，總是確認檔案路徑和模組名稱存在**。
+- **永遠不要刪除或覆寫現有程式碼**，除非明確指示或是 `TASK.md` 中任務的一部分。
