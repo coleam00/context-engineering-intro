@@ -23,7 +23,8 @@
       "Bash(git fetch:*)",
       "Bash(git remote set-url:*)",
       "Bash(git merge:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(gh pr create:*)"
     ],
     "deny": []
   }
