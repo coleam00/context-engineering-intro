@@ -1,0 +1,17 @@
+# Global Novel Settings
+# This file contains user-defined settings for novel generation
+
+## Genre
+[Specify the genre: fantasy, sci-fi, mystery, romance, etc.]
+
+## Target Audience
+[Age group and reader preferences]
+
+## Tone and Style
+[Writing style preferences: formal, casual, humorous, dark, etc.]
+
+## Length
+[Target word count or chapter count]
+
+## Additional Requirements
+[Any specific requirements or constraints]
