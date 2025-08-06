@@ -1,6 +1,6 @@
 # Execute BASE PRP
 
-Implement a feature using using the PRP file.
+Implement a feature using the PRP file.
 
 ## PRP File: $ARGUMENTS
 
