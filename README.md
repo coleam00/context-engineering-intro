@@ -1,3 +1,5 @@
+[![MSeeP.ai Security Assessment Badge](https://mseep.net/pr/coleam00-context-engineering-intro-badge.png)](https://mseep.ai/app/coleam00-context-engineering-intro)
+
 # Context Engineering Template
 
 A comprehensive template for getting started with Context Engineering - the discipline of engineering context for AI coding assistants so they have the information necessary to get the job done end to end.
