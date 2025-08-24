@@ -1,6 +1,6 @@
 ## FEATURE:
 
-[Insert your feature here]
+Data validation - Check for negative amounts, valid categories, proper date formats
 
 ## EXAMPLES:
 
@@ -9,6 +9,9 @@
 ## DOCUMENTATION:
 
 [List out any documentation (web pages, sources for an MCP server like Crawl4AI RAG, etc.) that will need to be referenced during development]
+https://docs.python.org/3/library/datetime.html
+https://docs.python.org/3/library/collections.html
+https://docs.python.org/3/library/sqlite3.html
 
 ## OTHER CONSIDERATIONS:
 
