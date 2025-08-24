@@ -1,26 +1,26 @@
 ## FEATURE:
 
-- Pydantic AI agent that has another Pydantic AI agent as a tool.
-- Research Agent for the primary agent and then an email draft Agent for the subagent.
-- CLI to interact with the agent.
-- Gmail for the email draft agent, Brave API for the research agent.
+- Create a Pydantic-based AI agent that uses another Pydantic agent as a tool.
+- The primary agent is a Research Agent; the sub-agent is responsible for drafting emails.
+- Provide a CLI interface to interact with the agents.
+- Use Gmail integration for the email draft agent, and the Brave API for the research agent.
 
 ## EXAMPLES:
 
-In the `examples/` folder, there is a README for you to read to understand what the example is all about and also how to structure your own README when you create documentation for the above feature.
+The `examples/` folder includes a `README.md` that explains the context of the provided examples and offers a template for structuring your own documentation.
 
-- `examples/cli.py` - use this as a template to create the CLI
-- `examples/agent/` - read through all of the files here to understand best practices for creating Pydantic AI agents that support different providers and LLMs, handling agent dependencies, and adding tools to the agent.
+- `examples/cli.py` – use this as a reference for implementing the CLI.
+- `examples/agent/` – review all files in this directory to understand best practices for building Pydantic AI agents that support multiple providers and LLMs, manage agent dependencies, and register tools.
 
-Don't copy any of these examples directly, it is for a different project entirely. But use this as inspiration and for best practices.
+Note: These examples belong to a different project. Do not reuse them directly, but use them as inspiration and to guide best practices.
 
 ## DOCUMENTATION:
 
-Pydantic AI documentation: https://ai.pydantic.dev/
+- [Pydantic AI Documentation](https://ai.pydantic.dev/)
 
 ## OTHER CONSIDERATIONS:
 
-- Include a .env.example, README with instructions for setup including how to configure Gmail and Brave.
-- Include the project structure in the README.
-- Virtual environment has already been set up with the necessary dependencies.
-- Use python_dotenv and load_env() for environment variables
+- Provide a `.env.example` file and a `README.md` with setup instructions, including configuration for Gmail and Brave.
+- Document the project structure in the `README.md`.
+- The virtual environment has already been configured with the necessary dependencies.
+- Use the `python-dotenv` library and `load_env()` to manage environment variables.
