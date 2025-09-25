@@ -1,0 +1,159 @@
+library_gotchas:
+  fastapi:
+    - issue: "Dependency injection with async functions"
+      description: "FastAPI dependencies must be async if they perform async operations"
+      solution: "Always use async def for dependencies that call async functions"
+      detection: "RuntimeError during dependency resolution"
+
+    - issue: "CORS configuration for development"
+      description: "CORS needs explicit configuration for frontend development"
+      solution: "Add CORSMiddleware with appropriate origins"
+      detection: "CORS errors in browser console"
+
+    - issue: "Background tasks with dependencies"
+      description: "Background tasks don't have access to request dependencies"
+      solution: "Pass required data directly to background task functions"
+      detection: "Dependency injection errors in background tasks"
+
+  sqlalchemy:
+    - issue: "Async session management"
+      description: "Sessions must be properly closed in async context"
+      solution: "Always use async with session: pattern"
+      detection: "Connection pool exhaustion"
+
+    - issue: "Lazy loading in async context"
+      description: "Lazy loading doesn't work with async sessions"
+      solution: "Use selectinload() or joinedload() for relationships"
+      detection: "DetachedInstanceError"
+
+    - issue: "Transaction handling"
+      description: "Transactions must be explicitly managed in async context"
+      solution: "Use session.begin() or explicit commit/rollback"
+      detection: "Uncommitted changes lost"
+
+  pydantic:
+    - issue: "V2 breaking changes"
+      description: "Pydantic v2 has different syntax for many features"
+      solution: "Follow v2 migration guide, use Field() instead of ..."
+      detection: "AttributeError or ImportError"
+
+    - issue: "Field validation order"
+      description: "Field validators run before type conversion"
+      solution: "Use @field_validator with mode='before' if needed"
+      detection: "Validation errors on valid input"
+
+    - issue: "BaseSettings import"
+      description: "BaseSettings moved to pydantic-settings in v2"
+      solution: "Import from pydantic_settings, not pydantic"
+      detection: "ImportError: cannot import name 'BaseSettings'"
+
+  pytest:
+    - issue: "Async test functions"
+      description: "Async test functions need special handling"
+      solution: "Install pytest-asyncio and use @pytest.mark.asyncio"
+      detection: "Tests appear to pass but don't run"
+
+    - issue: "Test isolation with databases"
+      description: "Database state can leak between tests"
+      solution: "Use transactional fixtures or database cleanup"
+      detection: "Intermittent test failures"
+
+    - issue: "Fixture scope issues"
+      description: "Incorrect fixture scope can cause resource conflicts"
+      solution: "Use appropriate scope (function, class, module, session)"
+      detection: "Fixture initialization errors"
+
+  click:
+    - issue: "Context passing in commands"
+      description: "Click context needs explicit passing for shared state"
+      solution: "Use @click.pass_context and ctx.obj for shared data"
+      detection: "AttributeError when accessing shared state"
+
+    - issue: "Option validation"
+      description: "Click options need explicit validation for complex types"
+      solution: "Use callback functions for custom validation"
+      detection: "Invalid option values accepted"
+
+  typer:
+    - issue: "Async command support"
+      description: "Typer needs special handling for async commands"
+      solution: "Use asyncio.run() wrapper or typer async support"
+      detection: "Async commands don't execute properly"
+
+    - issue: "Rich integration"
+      description: "Rich formatting requires proper console setup"
+      solution: "Import and configure rich console properly"
+      detection: "Formatting not applied or errors"
+
+  requests:
+    - issue: "SSL verification in production"
+      description: "SSL verification should never be disabled in production"
+      solution: "Always use verify=True or provide custom CA bundle"
+      detection: "InsecureRequestWarning or SSL errors"
+
+    - issue: "Timeout configuration"
+      description: "Requests without timeout can hang indefinitely"
+      solution: "Always specify timeout parameter"
+      detection: "Hanging requests or long response times"
+
+    - issue: "Session reuse"
+      description: "Creating new Session for each request is inefficient"
+      solution: "Reuse Session objects for connection pooling"
+      detection: "Poor performance or connection exhaustion"
+
+  aiohttp:
+    - issue: "Session lifecycle management"
+      description: "ClientSession must be properly closed"
+      solution: "Use async with ClientSession() or explicit close()"
+      detection: "ResourceWarning about unclosed sessions"
+
+    - issue: "JSON response handling"
+      description: "Response.json() is a coroutine that must be awaited"
+      solution: "Always await response.json()"
+      detection: "Coroutine object returned instead of data"
+
+  asyncio:
+    - issue: "Event loop in notebooks"
+      description: "Jupyter notebooks already have a running event loop"
+      solution: "Use await instead of asyncio.run() in notebooks"
+      detection: "RuntimeError: cannot be called from a running event loop"
+
+    - issue: "Blocking calls in async functions"
+      description: "Blocking I/O calls block the entire event loop"
+      solution: "Use asyncio.to_thread() for blocking operations"
+      detection: "Event loop blocked, poor async performance"
+
+  pandas:
+    - issue: "SettingWithCopyWarning"
+      description: "Chained assignment can create ambiguous behavior"
+      solution: "Use .loc[] or .copy() for assignment operations"
+      detection: "SettingWithCopyWarning in output"
+
+    - issue: "Memory usage with large datasets"
+      description: "Pandas can consume excessive memory with large files"
+      solution: "Use chunking or dask for large datasets"
+      detection: "Out of memory errors or slow performance"
+
+  numpy:
+    - issue: "Array comparison ambiguity"
+      description: "Boolean array comparison in if statements is ambiguous"
+      solution: "Use .any(), .all(), or np.array_equal() for comparisons"
+      detection: "ValueError: The truth value of an array is ambiguous"
+
+  matplotlib:
+    - issue: "Backend configuration"
+      description: "Wrong backend can cause display or saving issues"
+      solution: "Set appropriate backend with matplotlib.use()"
+      detection: "Plots not displaying or saving incorrectly"
+
+  python_dotenv:
+    - issue: "Environment variable precedence"
+      description: "System env vars may override .env file values"
+      solution: "Use override=True parameter if .env should take precedence"
+      detection: "Unexpected environment variable values"
+
+  pathlib:
+    - issue: "String concatenation with Path objects"
+      description: "Path objects don't support string concatenation with +"
+      solution: "Use Path.joinpath() or / operator for path joining"
+      detection: "TypeError: unsupported operand type(s)"

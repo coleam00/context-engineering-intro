@@ -1,0 +1,144 @@
+failure_patterns:
+  - id: "async_context_mixing"
+    description: "Mixing sync and async code contexts"
+    frequency: "high"
+    severity: "high"
+    detection_signs:
+      - "RuntimeError: cannot be called from a running event loop"
+      - "SyncError in async context"
+      - "TypeError: object NoneType can't be used in 'await' expression"
+    prevention:
+      - "Always use async/await consistently throughout the call stack"
+      - "Use asyncio.run() for top-level async calls"
+      - "Never call sync functions from async context without proper handling"
+    solution: "Convert all sync calls to async equivalents or use asyncio.to_thread()"
+    related_libraries: ["asyncio", "aiohttp", "fastapi", "sqlalchemy"]
+    first_seen: "2024-01-15T10:30:00Z"
+    last_seen: "2024-12-20T14:22:00Z"
+    frequency_count: 23
+
+  - id: "pydantic_v2_breaking_changes"
+    description: "Pydantic v2 syntax and validation changes"
+    frequency: "medium"
+    severity: "medium"
+    detection_signs:
+      - "ValidationError: Field required"
+      - "AttributeError: 'Field' object has no attribute"
+      - "ImportError: cannot import name 'BaseSettings' from 'pydantic'"
+    prevention:
+      - "Use Field() instead of ... for optional fields"
+      - "Import BaseSettings from pydantic_settings, not pydantic"
+      - "Update validator syntax to use @field_validator"
+    solution: "Follow Pydantic v2 migration guide for syntax updates"
+    related_libraries: ["pydantic", "fastapi", "pydantic-settings"]
+    first_seen: "2024-03-10T09:15:00Z"
+    last_seen: "2024-11-30T16:45:00Z"
+    frequency_count: 15
+
+  - id: "environment_variable_missing"
+    description: "Missing or incorrectly configured environment variables"
+    frequency: "medium"
+    severity: "medium"
+    detection_signs:
+      - "KeyError: 'API_KEY'"
+      - "None type has no attribute"
+      - "Configuration validation failed"
+    prevention:
+      - "Always check .env.example completeness"
+      - "Use default values in config with proper validation"
+      - "Validate required environment variables at startup"
+    solution: "Implement proper config validation with clear error messages"
+    related_libraries: ["python-dotenv", "pydantic-settings", "os"]
+    first_seen: "2024-02-01T11:20:00Z"
+    last_seen: "2024-12-15T13:30:00Z"
+    frequency_count: 18
+
+  - id: "import_path_errors"
+    description: "Incorrect import paths or missing dependencies"
+    frequency: "medium"
+    severity: "low"
+    detection_signs:
+      - "ModuleNotFoundError: No module named"
+      - "ImportError: cannot import name"
+      - "AttributeError: module has no attribute"
+    prevention:
+      - "Verify all imports before implementation"
+      - "Use absolute imports for clarity"
+      - "Check requirements.txt for all dependencies"
+    solution: "Fix import paths and ensure all dependencies are installed"
+    related_libraries: ["*"]
+    first_seen: "2024-01-20T08:45:00Z"
+    last_seen: "2024-12-18T10:15:00Z"
+    frequency_count: 12
+
+  - id: "database_connection_issues"
+    description: "Database connection, session, or transaction problems"
+    frequency: "medium"
+    severity: "high"
+    detection_signs:
+      - "sqlalchemy.exc.InvalidRequestError"
+      - "Connection pool exhausted"
+      - "Transaction already closed"
+    prevention:
+      - "Always use proper session management"
+      - "Implement connection pooling"
+      - "Use async sessions consistently"
+    solution: "Follow SQLAlchemy async patterns and proper session handling"
+    related_libraries: ["sqlalchemy", "asyncpg", "psycopg2"]
+    first_seen: "2024-02-15T14:00:00Z"
+    last_seen: "2024-12-10T09:30:00Z"
+    frequency_count: 10
+
+  - id: "api_rate_limiting"
+    description: "External API rate limiting and quota issues"
+    frequency: "medium"
+    severity: "medium"
+    detection_signs:
+      - "HTTP 429 Too Many Requests"
+      - "Rate limit exceeded"
+      - "Quota exceeded"
+    prevention:
+      - "Implement exponential backoff"
+      - "Add rate limiting to API calls"
+      - "Monitor API usage quotas"
+    solution: "Add retry logic with backoff and proper error handling"
+    related_libraries: ["requests", "aiohttp", "httpx"]
+    first_seen: "2024-03-01T12:30:00Z"
+    last_seen: "2024-12-05T15:45:00Z"
+    frequency_count: 8
+
+  - id: "json_serialization_errors"
+    description: "JSON serialization/deserialization issues"
+    frequency: "low"
+    severity: "medium"
+    detection_signs:
+      - "TypeError: Object of type X is not JSON serializable"
+      - "JSONDecodeError: Expecting value"
+      - "UnicodeDecodeError"
+    prevention:
+      - "Use Pydantic models for JSON handling"
+      - "Implement custom serializers for complex types"
+      - "Validate JSON structure before parsing"
+    solution: "Use proper JSON handling with validation and custom serializers"
+    related_libraries: ["json", "pydantic", "fastapi"]
+    first_seen: "2024-04-10T16:20:00Z"
+    last_seen: "2024-11-25T11:10:00Z"
+    frequency_count: 6
+
+  - id: "test_isolation_issues"
+    description: "Test dependencies and isolation problems"
+    frequency: "low"
+    severity: "medium"
+    detection_signs:
+      - "Tests pass individually but fail in suite"
+      - "Database state pollution between tests"
+      - "Mock leakage between tests"
+    prevention:
+      - "Use proper test fixtures and cleanup"
+      - "Isolate database state between tests"
+      - "Reset mocks in teardown"
+    solution: "Implement proper test isolation and cleanup strategies"
+    related_libraries: ["pytest", "unittest", "mock"]
+    first_seen: "2024-05-15T13:45:00Z"
+    last_seen: "2024-10-30T14:20:00Z"
+    frequency_count: 4
