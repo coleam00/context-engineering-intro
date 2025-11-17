@@ -3,3 +3,8 @@ venv_linux
 __pycache__
 .ruff_cache
 .pytest_cache
+/use-cases/data-application/.idea/
+/use-cases/mcp-server/.idea/
+/use-cases/data-application/node_modules
+/use-cases/mcp-server/node_modules
+/.idea/

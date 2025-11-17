@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(source:*)",
+      "Bash(find:*)",
+      "Bash(mv:*)",
+      "Bash(mkdir:*)",
+      "Bash(tree:*)",
+      "Bash(ruff:*)",
+      "Bash(touch:*)",
+      "Bash(cat:*)",
+      "Bash(ruff check:*)",
+      "Bash(pytest:*)",
+      "Bash(python:*)",
+      "Bash(python -m pytest:*)",
+      "Bash(python3 -m pytest:*)",
+      "WebFetch(domain:*)",
+      "Bash(gh issue view:*)",
+      "mcp__archon",
+      "WebSearch",
+      "Bash(cp:*)",
+      "Bash(sed:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs"
+    ],
+    "additionalDirectories": [
+      "D:\\Projects\\workspace_ai\\context-engineering\\use-cases\\data-application"
+    ],
+    "deny": []
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "context7"
+  ]
+}

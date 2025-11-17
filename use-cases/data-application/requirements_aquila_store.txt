@@ -1,0 +1,104 @@
+Company Description
+OTCF S.A. is a leading Polish company operating in the clothing and sports industry, specializing in the design, production, and distribution of high-quality sportswear and accessories under brands such as 4F, 4FJunior, 4F Fuel, and Under Armour (Poland distributor). The company operates an extensive network of brick-and-mortar stores and online stores (4F and Sport Style Story) and sells through wholesale channels.
+ 
+Mission and Values
+OTCF S.A. aims to promote an active lifestyle by delivering high-quality sportswear and accessories. The company places strong emphasis on innovation, product quality, and sustainable development, and supports athletes and sporting events to promote a healthy and active lifestyle.
+ 
+Brands and Products
+•	4F – The flagship brand offering sportswear and accessories, known for high-quality materials, modern design, and functionality.
+•	4F Junior – Sportswear and accessories for children aged 6–12, encouraging them to explore various sports and activities.
+•	4F Fuel – A brand aimed at physically active people at all levels, offering functional food and dietary supplements.
+•	Under Armour – Since 2020, OTCF S.A. has been the exclusive distributor of Under Armour in Poland, with wholesale distribution rights and a license to open monobrand stores.
+ 
+Store Network
+•	Store Brands (signage): 4F, Sport Style Story, Multibrand
+•	Store Types:
+ • Company-owned regular stores
+ • Company-owned outlets
+ • Franchise regular stores
+ • Shop-in-shop counters
+ • Seasonal stands
+ 
+Markets and Points of Sale:
+•	Poland – 450 POS (avg. 2 cash registers + 1 back-office PC per store)
+•	Slovakia – 22
+•	Romania – 21
+•	Lithuania – 8
+•	Latvia – 6
+•	Croatia – 3
+•	Czech Republic – 2
+•	Planned: Bulgaria, Hungary, Estonia, Montenegro, Ukraine, and others
+
+Project Objectives
+Replace the current POS and Back Office system with a modern, lightweight technology solution that:
+•	Simplifies installation and maintenance
+•	Enables easy integration with other systems
+•	Increases flexibility and reduces time for changes
+•	Improves data synchronization
+ 
+The solution should support not only checkout operations but also warehouse, accounting, reporting, and integration with internal and external systems. The desktop version should be complemented by a mobile app for handheld scanner devices (CipherLab, Bluebird).
+ 
+3. Scope of the RFP
+3.1 Functional Requirements
+Product Catalogue / Stock / Prices
+•	Display product data (basic info + attributes + images + descriptions), prices (list, current, “omnibus”), stock levels (sales floor / back office)
+•	Show complementary, additional, and substitute products
+ 
+Warehouse Management
+•	Handle stock movements (deliveries, store-to-store transfers, RW/PW docs) and discrepancies
+•	Manage transfer and return orders to central warehouse
+•	Register courier shipments with status tracking
+ 
+Pricing / Discounts / Promotions
+•	Update prices by price groups
+•	Announce upcoming price changes
+•	Print labels with list/current/omnibus prices
+•	Define promotions for network/store groups/single stores
+•	Configure promotion rules, exclusions, dependencies, stacking order, minimum price thresholds, etc.
+•	Create and process coupons, loyalty cards (with limits), vouchers
+ 
+Sales & Returns
+•	Issue sales (receipt, invoice) and returns (receipt correction, invoice correction)
+•	Support multiple payment types (cash, card, gift card, voucher, mixed)
+•	Integrate with payment terminals
+•	Post-fiscalization of receipts
+•	Comply with KSEF and equivalents abroad
+ 
+Gift Cards
+•	Generate/import cards from external systems
+•	Load/reload cards, process refunds to gift cards
+ 
+Cash Operations
+•	Record movements between tills, safe, and bank
+•	End-of-shift settlement
+•	Cash reports
+ 
+Inventory
+•	Full and partial inventory
+•	Import results files
+ 
+Complaints
+•	Register complaints, process with central system integration (decisions, statuses)
+•	Refund/settlement with customer
+ 
+Damaged Goods
+•	Register damaged items, decide on disposal, markdown, or return with central system integration
+ 
+Omnichannel & Loyalty
+•	In-store pickup and returns of e-commerce orders
+•	Handle e-commerce complaints and reservations
+•	Check e-commerce stock availability
+•	Order products online for delivery or store pickup
+•	Ship from store directly to customer
+•	Identify omnichannel customers, check their profile
+•	Generate customer recommendations based on omnichannel data
+ 
+Store Staff Management
+•	Add users, assign roles
+•	Track worked hours
+•	Assign sales to staff, generate individual sales reports
+
+ 
+Roles & Access
+•	Define users → roles → permissions
+•	Assign users to store/region
