@@ -3,3 +3,38 @@ venv_linux
 __pycache__
 .ruff_cache
 .pytest_cache
+
+# Data files (sensitive customer data)
+data/
+*.xlsx
+*.xls
+!data/templates/*.xlsx
+
+# Environment
+.env
+.env.local
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/
