@@ -94,7 +94,7 @@ Your plan should be detailed enough that multiple agents could divide the work. 
 - Data models or API contracts
 - Acceptance criteria
 
-See `plans/session-manager-plan.md` for an example.
+See `example-plan/session-manager-plan.md` for an example.
 
 ## Usage
 
