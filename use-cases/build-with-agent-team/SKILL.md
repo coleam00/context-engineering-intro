@@ -51,46 +51,38 @@ Enable tmux split panes so each agent is visible:
 teammateMode: "tmux"
 ```
 
-Before spawning, enter **Delegate Mode** (Shift+Tab) to restrict yourself to coordination only. You should NOT implement code yourself.
+## Step 4: Define Contracts
 
-## Step 4: Contract-First Spawning
+Before spawning agents, the lead reads the plan and defines the integration contracts between layers. This focused upfront work is what enables all agents to spawn in parallel without diverging on interfaces. Agents that build in parallel will diverge on endpoint URLs, response shapes, trailing slashes, and data storage semantics unless they start with agreed-upon contracts.
 
-**CRITICAL LESSON:** Agents that build in parallel WILL diverge on interfaces (endpoint URLs, response shapes, trailing slashes, data storage semantics) unless they agree on contracts FIRST. The lead must enforce a **contract-first, build-second** protocol.
+### Map the Contract Chain
 
-### Identify the Contract Chain
-
-Before spawning anyone, map out the interface dependency chain:
+Identify which layers need to agree on interfaces:
 
 ```
-Database → publishes function signatures → Backend
-Backend → publishes API contract → Frontend
+Database → function signatures, data shapes → Backend
+Backend → API contract (URLs, response shapes, SSE format) → Frontend
 ```
 
-Agents UPSTREAM in this chain must publish their contract BEFORE downstream agents start building. This means spawning is **staggered, not fully parallel**.
+### Author the Contracts
 
-### Spawn Order
+From the plan, define each integration contract with enough specificity that agents can build to it independently:
 
-1. **Spawn upstream agents first** (e.g., database, then backend)
-2. Each upstream agent's FIRST task is: define and send their contract via SendMessage
-3. **Lead receives and verifies the contract** — check for ambiguities, missing details
-4. **Lead forwards the verified contract to downstream agents** — do NOT rely on agents messaging each other
-5. **Only then spawn or unblock downstream agents** with the contract included in their prompt
+**Database → Backend contract:**
+- Function signatures (create, read, update, delete)
+- Pydantic model definitions
+- Data shapes and types
 
-### Lead as Active Contract Relay
-
-**Do NOT just tell agents "share your contract with the other agent."** This fails because:
-- The upstream agent may finish and share too late
-- The downstream agent may already be building with wrong assumptions
-- Messages between agents may be missed or unclear
-
-Instead, the lead must:
-1. Receive the contract from the producing agent
-2. **Verify it** — check for: exact URLs with trailing slashes, exact JSON response shapes, exact status codes, SSE event format, any envelope wrappers like `{session: {...}, messages: [...]}`
-3. **Forward it to consuming agents** with explicit instructions: "Build to this contract exactly. Do not deviate."
+**Backend → Frontend contract:**
+- Exact endpoint URLs (including trailing slash conventions)
+- Request/response JSON shapes (exact structures, not prose descriptions)
+- Status codes for success and error cases
+- SSE event types with exact JSON format
+- Response envelopes (flat vs nested — e.g., `{"session": {...}, "messages": [...]}`)
 
 ### Identify Cross-Cutting Concerns
 
-Some behaviors span multiple agents and WILL fall through the cracks unless explicitly assigned. Before spawning, identify these from the plan and assign ownership:
+Some behaviors span multiple agents and will fall through the cracks unless explicitly assigned. Identify these from the plan and assign ownership to one agent:
 
 Common cross-cutting concerns:
 - **Streaming data storage**: If backend streams chunks to frontend, should chunks be stored individually in the DB or accumulated into one row? (Affects how frontend renders on reload)
@@ -99,7 +91,22 @@ Common cross-cutting concerns:
 - **Error shapes**: How errors are returned (status codes, error body format)
 - **UI accessibility**: Interactive elements need aria-labels for automated testing
 
-Assign each concern to ONE agent with instructions to coordinate with the other.
+Assign each concern to one agent with instructions to coordinate with others.
+
+### Contract Quality Checklist
+
+Before including a contract in agent prompts, verify:
+- Are URLs exact, including trailing slashes? (e.g., `POST /api/sessions/` vs `POST /api/sessions`)
+- Are response shapes explicit JSON, not prose descriptions? (e.g., `{"session": {...}, "messages": [...]}` not "returns session with messages")
+- Are all SSE event types documented with exact JSON?
+- Are error responses specified? (404 body, 422 body, etc.)
+- Are storage semantics clear? (accumulated vs per-chunk)
+
+## Step 5: Spawn All Agents in Parallel
+
+With contracts defined, spawn all agents simultaneously. Each agent receives the full context they need to build independently from the start. This is the whole point of agent teams — parallel work across boundaries.
+
+Enter **Delegate Mode** (Shift+Tab) before spawning. You should not implement code yourself — your role is coordination.
 
 ### Spawn Prompt Structure
 
@@ -113,114 +120,104 @@ You are the [ROLE] agent for this build.
 ## What You're Building
 [Relevant section from plan]
 
-## Mandatory Communication (REQUIRED)
+## Contracts
 
-### Before You Build
-- Your FIRST deliverable is your [API contract / schema / interface]
-- Send it to the lead via SendMessage BEFORE writing implementation code
-- Include: exact URLs (with trailing slashes if applicable), exact request/response JSON shapes, status codes, SSE event formats
-- Wait for the lead to confirm before proceeding
+### Contract You Produce
+[Include the lead-authored contract this agent is responsible for]
+- Build to match this exactly
+- If you need to deviate, message the lead and wait for approval before changing
 
-### The Contract You Must Conform To
-[Include the upstream agent's verified contract here]
+### Contract You Consume
+[Include the lead-authored contract this agent depends on]
+- Build against this interface exactly — do not guess or deviate
 
 ### Cross-Cutting Concerns You Own
 [Explicitly list integration behaviors this agent is responsible for]
 
 ## Coordination
+- Message the lead if you discover something that affects a contract
+- Ask before deviating from any agreed contract
+- Flag cross-cutting concerns that weren't anticipated
 - Share with [other agent] when: [trigger]
-- Ask [other agent] about: [dependency]
 - Challenge [other agent]'s work on: [integration point]
+
+## Before Reporting Done
+Run these validations and fix any failures:
+1. [specific validation command]
+2. [specific validation command]
+Do NOT report done until all validations pass.
 ```
 
-## Step 5: Facilitate Collaboration
+## Step 6: Facilitate Collaboration
 
-Agent teams are NOT just parallel workers. They must communicate. The lead enforces this with the contract-first protocol.
+All agents are working in parallel. Your job as lead is to keep them aligned and unblock them.
 
-### Phase 1: Contracts (Sequential, Lead-Orchestrated)
+### During Implementation
 
-Spawn agents in dependency order. Each agent's first task is publishing their contract:
+- Relay messages between agents when they flag contract issues
+- If an agent needs to deviate from a contract, evaluate the change, update the contract, and notify all affected agents
+- Unblock agents waiting on decisions
+- Track progress through the shared task list
 
-1. **Database agent** → publishes function signatures and data shapes → lead verifies → forwards to backend
-2. **Backend agent** → receives DB contract → publishes API contract (exact URLs, JSON shapes, SSE format, status codes) → lead verifies → forwards to frontend
-3. **Frontend agent** → receives verified API contract → builds to match exactly
+### Pre-Completion Contract Verification
 
-**Lead verification checklist for API contracts:**
-- Are URLs exact, including trailing slashes? (e.g., `POST /api/sessions/` vs `POST /api/sessions`)
-- Is the response shape explicit? (e.g., `{"session": {...}, "messages": [...]}` NOT just "returns session with messages")
-- Are all SSE event types documented with exact JSON?
-- Are error responses specified? (404 body, 422 body, etc.)
-- Are there any streaming storage semantics to clarify? (accumulated vs per-chunk)
-
-### Phase 2: Implementation (Parallel where safe)
-
-Once contracts are verified, agents build in parallel. They MUST:
-- Send a message to the lead when they discover something that affects the contract
-- Ask before deviating from the agreed contract
-- Flag cross-cutting concerns that weren't anticipated
-
-### Phase 3: Pre-Completion Contract Verification
-
-Before any agent reports "done", the lead runs a **contract diff**:
+Before any agent reports "done", run a contract diff:
 - "Backend: what exact curl commands test each endpoint?"
 - "Frontend: what exact fetch URLs are you calling with what request bodies?"
-- Lead compares and flags mismatches BEFORE integration testing
+- Compare and flag mismatches before integration testing
 
-### Phase 4: Polish (Cross-Review)
+### Cross-Review
 Each agent reviews another's work:
 - Frontend reviews Backend API usability
 - Backend reviews Database query patterns
 - Database reviews Frontend data access patterns
 
-## Collaboration Anti-Patterns
+## Collaboration Patterns
 
-**Anti-pattern 1: Fully parallel spawn** (agents diverge)
+**Anti-pattern: Parallel spawn without contracts** (agents diverge)
 ```
-Lead spawns all 3 agents simultaneously
+Lead spawns all 3 agents simultaneously without defining interfaces
 Each agent builds to their own assumptions
 Integration fails on URL mismatches, response shape mismatches ❌
 ```
 
-**Anti-pattern 2: Late contract sharing** (rework required)
+**Anti-pattern: Fully sequential spawning** (defeats purpose of agent teams)
 ```
-Backend finishes → sends API contract to frontend
-Frontend already built with wrong URLs/shapes → has to redo work ❌
+Lead spawns database agent → waits for contract → spawns backend → waits → spawns frontend
+Only one agent works at a time, no parallelism ❌
 ```
 
-**Anti-pattern 3: "Tell them to talk"** (they won't reliably)
+**Anti-pattern: "Tell them to talk"** (they won't reliably)
 ```
 Lead tells backend "share your contract with frontend"
 Backend sends contract but frontend already built half the app ❌
 ```
 
-**Good pattern: Contract-first with lead relay**
+**Good pattern: Lead-authored contracts, parallel spawn**
 ```
-Backend publishes contract → Lead verifies → Lead forwards to frontend with "build to this exactly"
-Frontend builds to verified contract → zero integration mismatches ✅
+Lead reads plan → defines all contracts upfront → spawns all agents in parallel with contracts included
+All agents build simultaneously to agreed interfaces → minimal integration mismatches ✅
 ```
 
-**Good pattern: Active collaboration**
+**Good pattern: Active collaboration during parallel work**
 ```
-Agent A: "Here's my API contract — Agent B, does this work for you?"
-Agent B: "The response shape needs a 'metadata' field for pagination"
-Agent A: "Good catch, updating now"
-Agent C: "I see you need user.email — I'll add an index for that query"
+Agent A: "I need to add a field to the response — messaging the lead"
+Lead: "Approved. Agent B, the response now includes 'metadata'. Update your fetch."
+Agent B: "Got it, updating now"
 ```
 
 ## Task Management
 
-Create a shared task list with dependencies:
+Create a shared task list. Since contracts are defined upfront, agents can start building immediately — no inter-agent blocking for initial implementation work. Only block tasks that genuinely require another agent's output (like integration testing).
 
 ```
-[ ] Agent A: Set up project structure
-[ ] Agent B: Set up project structure
-[ ] Agent C: Design schema (blocks Backend)
-[ ] Agent B: Implement API (blocked by Database schema)
 [ ] Agent A: Build UI components
-[ ] Agent A + B: Integration testing (blocked by API + UI)
+[ ] Agent B: Implement API endpoints
+[ ] Agent C: Build schema and data layer
+[ ] Agent A + B + C: Integration testing (blocked by all implementation tasks)
 ```
 
-Track progress and unblock agents when dependencies complete.
+Track progress and facilitate communication when agents need to coordinate.
 
 ## Common Pitfalls to Prevent
 
@@ -229,7 +226,7 @@ Track progress and unblock agents when dependencies complete.
 3. **Isolated work**: Agents don't talk → Require explicit handoffs via lead relay
 4. **Vague boundaries**: "Help with backend" → Specify exact files/responsibilities
 5. **Missing dependencies**: Agent B waits on Agent A forever → Track blockers actively
-6. **Fully parallel spawn**: All agents start simultaneously → Interface divergence. Spawn upstream agents first, get contracts, then spawn downstream
+6. **Parallel spawn without contracts**: All agents start simultaneously with no shared interfaces → Integration failures. Define contracts before spawning
 7. **Implicit contracts**: "The API returns sessions" → Ambiguous. Require exact JSON shapes, URLs with trailing slashes, status codes
 8. **Orphaned cross-cutting concerns**: Streaming storage, URL conventions, error shapes → Nobody owns them. Explicitly assign to one agent
 9. **Per-chunk storage**: Backend stores each streamed text chunk as a separate DB row → Frontend renders N bubbles on reload. Accumulate chunks into single rows
@@ -247,7 +244,7 @@ The build is complete when:
 
 ---
 
-## Step 6: Validation
+## Step 7: Validation
 
 Validation happens at two levels: **agent-level** (each agent validates their domain) and **lead-level** (you validate the integrated system).
 
@@ -349,14 +346,12 @@ Now read the plan at `$ARGUMENTS[0]` and begin:
 
 1. Read and understand the plan
 2. Determine team size (use `$ARGUMENTS[1]` if provided, otherwise decide)
-3. Define agent roles, ownership, **cross-cutting concern assignments**, and **validation requirements for each**
-4. **Map the contract chain** — which agent produces interfaces that others consume?
-5. Enter Delegate Mode
-6. **Spawn upstream agents first** — their first task is publishing their contract
-7. **Receive and verify each contract** — check for ambiguities, exact URLs, response shapes
-8. **Forward verified contracts to downstream agents** — include in their spawn prompt
-9. Spawn downstream agents with verified contracts + their validation checklist
-10. **Run contract diff before integration** — compare backend's curl commands vs frontend's fetch URLs
-11. When all agents return, run **end-to-end validation yourself** (start both servers, use agent-browser for UI testing)
-12. If validation fails, re-spawn the relevant agent with the specific issue
-13. Confirm the build meets the plan's requirements
+3. Define agent roles, ownership, cross-cutting concern assignments, and validation requirements
+4. Map the contract chain and define all integration contracts from the plan — exact URLs, response shapes, data models, SSE formats
+5. Enter Delegate Mode (Shift+Tab)
+6. Spawn all agents in parallel with contracts and validation checklists included in their prompts
+7. Monitor agents, relay messages, mediate contract deviations
+8. Run contract diff before integration — compare backend's curl commands vs frontend's fetch URLs
+9. When all agents return, run end-to-end validation yourself (start services, use agent-browser for UI testing)
+10. If validation fails, re-spawn the relevant agent with the specific issue
+11. Confirm the build meets the plan's requirements

@@ -65,6 +65,8 @@ Or export in your shell profile (`~/.bashrc` or `~/.zshrc`):
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 ```
 
+> **tmux note:** Starting a tmux session opens a new shell that does not inherit environment variables from your current terminal. If you enable agent teams via `export`, you must run that export **inside the tmux session**, or add it to your shell profile (`~/.bashrc` / `~/.zshrc`) so it loads automatically. Enter tmux first, then set the variable and launch Claude from there. The `settings.json` approach avoids this issue entirely.
+
 ## Installation
 
 Copy the skill to your personal skills directory:
