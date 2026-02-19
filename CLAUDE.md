@@ -12,7 +12,6 @@
     - `tools.py` - Tool functions used by the agent 
     - `prompts.py` - System prompts
 - **Use clear, consistent imports** (prefer relative imports within packages).
-- **Use clear, consistent imports** (prefer relative imports within packages).
 - **Use python_dotenv and load_env()** for environment variables.
 
 ### 🧪 Testing & Reliability
