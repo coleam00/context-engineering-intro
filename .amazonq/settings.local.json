@@ -10,16 +10,14 @@
       "Bash(tree:*)",
       "Bash(ruff:*)",
       "Bash(touch:*)",
-      "Bash(chmod:*)",
       "Bash(cat:*)",
       "Bash(ruff check:*)",
       "Bash(pytest:*)",
       "Bash(python:*)",
       "Bash(python -m pytest:*)",
       "Bash(python3 -m pytest:*)",
-      "WebFetch(domain:*)",
-      "Bash(gh issue view:*)",
-      "WebFetch(domain:docs.anthropic.com)"
+      "WebFetch(domain:docs.aws.amazon.com)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": []
   }

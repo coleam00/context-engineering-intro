@@ -1,8 +1,8 @@
-# Prime Context for Claude Code
+# Prime Context for Amazon Q
 
 Use the command `tree` to get an understanding of the project structure.
 
-Start with reading the CLAUDE.md file if it exists to get an understanding of the project.
+Start with reading the AMAZONQ.md file if it exists to get an understanding of the project.
 
 Read the README.md file to get an understanding of the project.
 

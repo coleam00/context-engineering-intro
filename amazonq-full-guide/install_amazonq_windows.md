@@ -1,6 +1,6 @@
-## Installing Claude Code on Windows (with WSL)
+## Installing Amazon Q Developer on Windows (with WSL)
 
-Claude Code only supports Linux and MacOS by default. To use Claude Code with Windows, you can use WSL.
+Amazon Q Developer CLI works best on Linux and MacOS. To use Amazon Q Developer with Windows, you can use WSL.
 
 1. Go to the Microsoft Store
 
@@ -26,8 +26,8 @@ echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
 # Apply the new PATH setting
 source ~/.bashrc
 
-# Now reinstall Claude Code in the new location
-npm install -g @anthropic-ai/claude-code
+# Now install Amazon Q Developer CLI in the new location
+npm install -g @aws/amazon-q-developer-cli
 ```
 
-5. Now within your IDEs you can open a terminal with Ctrl + J (also use this hotkey to toggle it off) and you can click on the down arrow next to the plus to open an Ubuntu (WSL) terminal where you can run the "claude" command to start Claude Code.
+5. Now within your IDEs you can open a terminal with Ctrl + J (also use this hotkey to toggle it off) and you can click on the down arrow next to the plus to open an Ubuntu (WSL) terminal where you can run the "q" command to start Amazon Q Developer.
