@@ -1,0 +1,360 @@
+# Knowledge Base Structure for Context Engineering
+# File: PRPs/knowledge_base/failure_patterns.yaml
+
+failure_patterns:
+  - id: "async_context_mixing"
+    description: "Mixing sync and async code contexts"
+    frequency: "high"
+    severity: "high"
+    detection_signs:
+      - "RuntimeError: cannot be called from a running event loop"
+      - "SyncError in async context"
+      - "TypeError: object NoneType can't be used in 'await' expression"
+    prevention:
+      - "Always use async/await consistently throughout the call stack"
+      - "Use asyncio.run() for top-level async calls"
+      - "Never call sync functions from async context without proper handling"
+    solution: "Convert all sync calls to async equivalents or use asyncio.to_thread()"
+    related_libraries: ["asyncio", "aiohttp", "fastapi", "sqlalchemy"]
+    first_seen: "2024-01-15T10:30:00Z"
+    last_seen: "2024-12-20T14:22:00Z"
+    frequency_count: 23
+    
+  - id: "pydantic_v2_breaking_changes"
+    description: "Pydantic v2 syntax and validation changes"
+    frequency: "medium"
+    severity: "medium"
+    detection_signs:
+      - "ValidationError: Field required"
+      - "AttributeError: 'Field' object has no attribute"
+      - "ImportError: cannot import name 'BaseSettings' from 'pydantic'"
+    prevention:
+      - "Use Field() instead of ... for optional fields"
+      - "Import BaseSettings from pydantic_settings, not pydantic"
+      - "Update validator syntax to use @field_validator"
+    solution: "Follow Pydantic v2 migration guide for syntax updates"
+    related_libraries: ["pydantic", "fastapi", "pydantic-settings"]
+    first_seen: "2024-03-10T09:15:00Z"
+    last_seen: "2024-11-30T16:45:00Z"
+    frequency_count: 15
+    
+  - id: "environment_variable_missing"
+    description: "Missing or incorrectly configured environment variables"
+    frequency: "medium"
+    severity: "medium"
+    detection_signs:
+      - "KeyError: 'API_KEY'"
+      - "None type has no attribute"
+      - "Configuration validation failed"
+    prevention:
+      - "Always check .env.example completeness"
+      - "Use default values in config with proper validation"
+      - "Validate required environment variables at startup"
+    solution: "Implement proper config validation with clear error messages"
+    related_libraries: ["python-dotenv", "pydantic-settings", "os"]
+    first_seen: "2024-02-01T11:20:00Z"
+    last_seen: "2024-12-15T13:30:00Z"
+    frequency_count: 18
+    
+  - id: "import_path_errors"
+    description: "Incorrect import paths or missing dependencies"
+    frequency: "medium"
+    severity: "low"
+    detection_signs:
+      - "ModuleNotFoundError: No module named"
+      - "ImportError: cannot import name"
+      - "AttributeError: module has no attribute"
+    prevention:
+      - "Verify all imports before implementation"
+      - "Use absolute imports for clarity"
+      - "Check requirements.txt for all dependencies"
+    solution: "Fix import paths and ensure all dependencies are installed"
+    related_libraries: ["*"]
+    first_seen: "2024-01-20T08:45:00Z"
+    last_seen: "2024-12-18T10:15:00Z"
+    frequency_count: 12
+    
+  - id: "database_connection_issues"
+    description: "Database connection, session, or transaction problems"
+    frequency: "medium"
+    severity: "high"
+    detection_signs:
+      - "sqlalchemy.exc.InvalidRequestError"
+      - "Connection pool exhausted"
+      - "Transaction already closed"
+    prevention:
+      - "Always use proper session management"
+      - "Implement connection pooling"
+      - "Use async sessions consistently"
+    solution: "Follow SQLAlchemy async patterns and proper session handling"
+    related_libraries: ["sqlalchemy", "asyncpg", "psycopg2"]
+    first_seen: "2024-02-15T14:00:00Z"
+    last_seen: "2024-12-10T09:30:00Z"
+    frequency_count: 10
+    
+  - id: "api_rate_limiting"
+    description: "External API rate limiting and quota issues"
+    frequency: "medium"
+    severity: "medium"
+    detection_signs:
+      - "HTTP 429 Too Many Requests"
+      - "Rate limit exceeded"
+      - "Quota exceeded"
+    prevention:
+      - "Implement exponential backoff"
+      - "Add rate limiting to API calls"
+      - "Monitor API usage quotas"
+    solution: "Add retry logic with backoff and proper error handling"
+    related_libraries: ["requests", "aiohttp", "httpx"]
+    first_seen: "2024-03-01T12:30:00Z"
+    last_seen: "2024-12-05T15:45:00Z"
+    frequency_count: 8
+    
+  - id: "json_serialization_errors"
+    description: "JSON serialization/deserialization issues"
+    frequency: "low"
+    severity: "medium"
+    detection_signs:
+      - "TypeError: Object of type X is not JSON serializable"
+      - "JSONDecodeError: Expecting value"
+      - "UnicodeDecodeError"
+    prevention:
+      - "Use Pydantic models for JSON handling"
+      - "Implement custom serializers for complex types"
+      - "Validate JSON structure before parsing"
+    solution: "Use proper JSON handling with validation and custom serializers"
+    related_libraries: ["json", "pydantic", "fastapi"]
+    first_seen: "2024-04-10T16:20:00Z"
+    last_seen: "2024-11-25T11:10:00Z"
+    frequency_count: 6
+    
+  - id: "test_isolation_issues"
+    description: "Test dependencies and isolation problems"
+    frequency: "low"
+    severity: "medium"
+    detection_signs:
+      - "Tests pass individually but fail in suite"
+      - "Database state pollution between tests"
+      - "Mock leakage between tests"
+    prevention:
+      - "Use proper test fixtures and cleanup"
+      - "Isolate database state between tests"
+      - "Reset mocks in teardown"
+    solution: "Implement proper test isolation and cleanup strategies"
+    related_libraries: ["pytest", "unittest", "mock"]
+    first_seen: "2024-05-15T13:45:00Z"
+    last_seen: "2024-10-30T14:20:00Z"
+    frequency_count: 4
+
+---
+# File: PRPs/knowledge_base/success_metrics.yaml
+
+success_metrics:
+  - feature_type: "api_integration"
+    implementations: 12
+    avg_token_usage: 2500
+    avg_implementation_time: 35
+    success_rate: 85
+    confidence_accuracy: 78
+    common_patterns:
+      - "async http client usage"
+      - "proper error handling with retries"
+      - "rate limiting implementation"
+      - "pydantic model validation"
+    key_success_factors:
+      - "comprehensive error handling"
+      - "proper async/await usage"
+      - "rate limiting from start"
+    common_issues:
+      - "rate limiting overlooked initially"
+      - "error handling too generic"
+    last_updated: "2024-12-20T10:30:00Z"
+    
+  - feature_type: "database_operations"
+    implementations: 8
+    avg_token_usage: 1800
+    avg_implementation_time: 25
+    success_rate: 92
+    confidence_accuracy: 85
+    common_patterns:
+      - "sqlalchemy async sessions"
+      - "proper migration handling"
+      - "connection pooling"
+      - "transaction management"
+    key_success_factors:
+      - "consistent async session usage"
+      - "proper connection pooling"
+      - "migration versioning"
+    common_issues:
+      - "session management complexity"
+      - "migration rollback issues"
+    last_updated: "2024-12-18T15:45:00Z"
+    
+  - feature_type: "cli_applications"
+    implementations: 15
+    avg_token_usage: 1200
+    avg_implementation_time: 20
+    success_rate: 95
+    confidence_accuracy: 90
+    common_patterns:
+      - "click or typer usage"
+      - "proper argument parsing"
+      - "colored output with rich"
+      - "progress bars for long operations"
+    key_success_factors:
+      - "clear command structure"
+      - "good help documentation"
+      - "proper error messages"
+    common_issues:
+      - "argument validation complexity"
+      - "cross-platform compatibility"
+    last_updated: "2024-12-15T12:20:00Z"
+    
+  - feature_type: "web_applications"
+    implementations: 10
+    avg_token_usage: 3200
+    avg_implementation_time: 45
+    success_rate: 82
+    confidence_accuracy: 75
+    common_patterns:
+      - "fastapi with async routes"
+      - "pydantic request/response models"
+      - "dependency injection"
+      - "middleware for cross-cutting concerns"
+    key_success_factors:
+      - "proper route organization"
+      - "comprehensive input validation"
+      - "proper error handling middleware"
+    common_issues:
+      - "authentication complexity"
+      - "cors configuration"
+      - "async context management"
+    last_updated: "2024-12-12T09:15:00Z"
+    
+  - feature_type: "data_processing"
+    implementations: 6
+    avg_token_usage: 2100
+    avg_implementation_time: 30
+    success_rate: 88
+    confidence_accuracy: 82
+    common_patterns:
+      - "pandas for data manipulation"
+      - "pydantic for validation"
+      - "async processing for large datasets"
+      - "proper memory management"
+    key_success_factors:
+      - "chunked processing for large data"
+      - "proper validation pipelines"
+      - "error recovery strategies"
+    common_issues:
+      - "memory usage optimization"
+      - "data type consistency"
+    last_updated: "2024-12-08T14:30:00Z"
+    
+  - feature_type: "agent_systems"
+    implementations: 4
+    avg_token_usage: 4500
+    avg_implementation_time: 60
+    success_rate: 75
+    confidence_accuracy: 70
+    common_patterns:
+      - "pydantic ai for agent framework"
+      - "tool registration patterns"
+      - "async tool execution"
+      - "context management"
+    key_success_factors:
+      - "clear tool definitions"
+      - "proper context passing"
+      - "comprehensive error handling"
+    common_issues:
+      - "context window management"
+      - "tool dependency coordination"
+      - "async execution complexity"
+    last_updated: "2024-12-01T16:45:00Z"
+
+---
+# File: PRPs/knowledge_base/template_versions.yaml
+
+template_versions:
+  - version: "v3.0"
+    created: "2024-12-20T12:00:00Z"
+    improvements:
+      - "Added failure pattern integration"
+      - "Enhanced context validation"
+      - "Multi-level validation loops"
+      - "Success metrics integration"
+      - "Rollback strategies"
+    confidence_improvement: 15
+    success_rate_improvement: 12
+    
+  - version: "v2.1"
+    created: "2024-11-15T10:30:00Z"
+    improvements:
+      - "Added context completeness scoring"
+      - "Improved validation gates"
+      - "Better anti-patterns section"
+    confidence_improvement: 8
+    success_rate_improvement: 7
+    
+  - version: "v2.0"
+    created: "2024-10-01T14:20:00Z"
+    improvements:
+      - "Structured task breakdown"
+      - "Enhanced documentation requirements"
+      - "Validation loop framework"
+    confidence_improvement: 12
+    success_rate_improvement: 10
+
+---
+# File: PRPs/knowledge_base/library_gotchas.yaml
+
+library_gotchas:
+  fastapi:
+    - issue: "Dependency injection with async functions"
+      description: "FastAPI dependencies must be async if they perform async operations"
+      solution: "Always use async def for dependencies that call async functions"
+      detection: "RuntimeError during dependency resolution"
+      
+    - issue: "CORS configuration for development"
+      description: "CORS needs explicit configuration for frontend development"
+      solution: "Add CORSMiddleware with appropriate origins"
+      detection: "CORS errors in browser console"
+      
+  sqlalchemy:
+    - issue: "Async session management"
+      description: "Sessions must be properly closed in async context"
+      solution: "Always use async with session: pattern"
+      detection: "Connection pool exhaustion"
+      
+    - issue: "Lazy loading in async context"
+      description: "Lazy loading doesn't work with async sessions"
+      solution: "Use selectinload() or joinedload() for relationships"
+      detection: "DetachedInstanceError"
+      
+  pydantic:
+    - issue: "V2 breaking changes"
+      description: "Pydantic v2 has different syntax for many features"
+      solution: "Follow v2 migration guide"
+      detection: "AttributeError or ImportError"
+      
+    - issue: "Field validation order"
+      description: "Field validators run before type conversion"
+      solution: "Use @field_validator with mode='before' if needed"
+      detection: "Validation errors on valid input"
+      
+  pytest:
+    - issue: "Async test functions"
+      description: "Async test functions need special handling"
+      solution: "Install pytest-asyncio and use @pytest.mark.asyncio"
+      detection: "Tests appear to pass but don't run"
+      
+    - issue: "Test isolation with databases"
+      description: "Database state can leak between tests"
+      solution: "Use transactional fixtures or database cleanup"
+      detection: "Intermittent test failures"
+      
+  click:
+    - issue: "Context passing in commands"
+      description: "Click context needs explicit passing for shared state"
+      solution: "Use @click.pass_context and ctx.obj for shared data"
+      detection: "AttributeError when accessing shared state"
