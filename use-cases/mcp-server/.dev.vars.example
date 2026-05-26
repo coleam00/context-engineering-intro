@@ -1,0 +1,22 @@
+GITHUB_CLIENT_ID=<your github client id>
+GITHUB_CLIENT_SECRET=<your github client secret>
+COOKIE_ENCRYPTION_KEY=<your cookie cookie encryption key>
+
+# Add your Anthropic API key below for PRP parsing functionality
+# ANTHROPIC_API_KEY=<your Anthropic API key>
+
+# Optional: Override the default Anthropic model (defaults to claude-3-5-haiku-latest)
+# ANTHROPIC_MODEL=claude-3-5-haiku-latest
+
+# Database Connection String
+# This should be a PostgreSQL connection string with full read/write permissions
+# Format: postgresql://username:password@hostname:port/database_name
+# Example: postgresql://user:password@localhost:5432/mydb
+# For production, use Hyperdrive: https://developers.cloudflare.com/hyperdrive/
+DATABASE_URL=postgresql://username:password@localhost:5432/database_name
+
+# Optional: Add Sentry DSN for local development monitoring
+# Get your DSN from https://sentry.io/settings/projects/your-project/keys/
+# Create a new project in Sentry, then for the platform pick Cloudflare Workers (search in the top right)
+SENTRY_DSN=https://your-sentry-dsn@sentry.io/project-id
+NODE_ENV=development

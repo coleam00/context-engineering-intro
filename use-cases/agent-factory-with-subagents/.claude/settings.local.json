@@ -16,8 +16,12 @@
       "Bash(python:*)",
       "Bash(python -m pytest:*)",
       "Bash(python3 -m pytest:*)",
-      "WebFetch(domain:docs.anthropic.com)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:*)",
+      "Bash(gh issue view:*)",
+      "mcp__archon",
+      "WebSearch",
+      "Bash(cp:*)",
+      "Bash(sed:*)"
     ],
     "deny": []
   }

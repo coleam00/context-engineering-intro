@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:ai.pydantic.dev)",
+      "mcp__archon__get_available_sources",
+      "Bash(mkdir:*)",
+      "Bash(ls:*)",
+      "mcp__archon__perform_rag_query",
+      "mcp__archon__search_code_examples",
+      "Bash(find:*)",
+      "Bash(test:*)",
+      "Bash(grep:*)",
+      "Bash(python:*)"
+    ],
+    "deny": []
+  }
+}

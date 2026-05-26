@@ -1,0 +1,50 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/log-tool-usage.sh",
+            "description": "Automatically logs file edits"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'input=$(cat); cmd=$(echo \"$input\" | jq -r \".tool_input.command // empty\"); if [[ \"$cmd\" =~ (rm|delete).*(\\*|\\.env|credentials|secret) ]]; then echo \"{\\\"action\\\": \\\"block\\\", \\\"message\\\": \\\"Dangerous command blocked: $cmd\\\"}\"; else echo \"{}\"; fi'",
+            "description": "Block dangerous bash commands"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'input=$(cat); agent=$(echo \"$input\" | jq -r \".subagent_name // empty\"); if [[ \"$agent\" == \"validation-gates\" ]]; then echo \"Validation gates completed. Running final checks...\" >&2; fi; echo \"{}\"'",
+            "description": "Log when validation-gates subagent completes"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command", 
+            "command": "bash -c 'input=$(cat); prompt=$(echo \"$input\" | jq -r \".prompt // empty\"); if [[ \"$prompt\" =~ (test|validate|check) ]] && [[ ! \"$prompt\" =~ (skip|no|without).*(test|validation) ]]; then echo \"Reminder: Use the validation-gates subagent to ensure comprehensive testing.\" >&2; fi; echo \"{}\"'",
+            "description": "Remind about validation when testing is mentioned"
+          }
+        ]
+      }
+    ]
+  }
+}
