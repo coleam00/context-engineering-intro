@@ -7,10 +7,12 @@
 
 ## EXAMPLES:
 
-In the `examples/` folder, there is a README for you to read to understand what the example is all about and also how to structure your own README when you create documentation for the above feature.
+Read `use-cases/pydantic-ai/README.md` for an overview of the Pydantic AI template and an example of how to structure your own README for the above feature.
 
-- `examples/cli.py` - use this as a template to create the CLI
-- `examples/agent/` - read through all of the files here to understand best practices for creating Pydantic AI agents that support different providers and LLMs, handling agent dependencies, and adding tools to the agent.
+- `use-cases/pydantic-ai/examples/main_agent_reference/cli.py` - use this as a reference for the CLI interaction pattern.
+- `use-cases/pydantic-ai/examples/` - read the agent examples for patterns for configuring providers and LLMs, handling agent dependencies, and adding tools.
+
+The root `examples/` folder is a placeholder for examples you add to your own project. The references above are under `use-cases/pydantic-ai/`.
 
 Don't copy any of these examples directly, it is for a different project entirely. But use this as inspiration and for best practices.
 
